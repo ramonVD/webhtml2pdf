@@ -1,6 +1,6 @@
 import './App.css';
 import Optionsbox from './components/optionsList/optionsbox';
-import FileList from './components/draganddrop/inhouse/filelist';
+import FileUploader from './components/draganddrop/file-uploader';
 
 function App() {
   return (
@@ -8,7 +8,9 @@ function App() {
       <div>Navbar</div>
       <div>Central text</div>
       <Optionsbox />
-      <FileList />
+      <div className="text-center">
+        <FileUploader />
+      </div>
     </div>
   );
 }

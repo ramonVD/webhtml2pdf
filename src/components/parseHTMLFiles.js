@@ -1,15 +1,18 @@
-/*PARSE THAT THE UPLOADED DOCUMENT IS VALID HTML.
-NEED TO BE SURE ITS A VALID HTML FILE,
-SUPER EXPLOITABLE*/
-function parseUploadedHTMLFile(htmlFile) {
-
+import sanitizeHtml from 'sanitize-html';
+/*PARSE THAT THE UPLOADED DOCUMENT IS VALID HTML, THEN SANITIZE IT AND
+RETURN IT AS AN HTML ELEMENT.
+SUPER EXPLOITY, NEED TO ADD CHECKS*/
+export const createDummyHTML = (htmlString) => {
+    const saneHTML = sanitizeHtml(htmlString);
+    const htmlElement = document.createElement( 'html' );
+    htmlElement.innerHTML = `<html>${saneHTML}</html>`;
+    return htmlElement;
 }
 
-/* Create a dummy html element first
-(https://stackoverflow.com/questions/10585029/parse-an-html-string-with-js)
-Then put in it the contents of the uploaded html file.*/
-function createDummyHTML(htmlString) {
-    var el = document.createElement( 'html' );
-    el.innerHTML = `<html>${htmlString}</html>`;
-    return el;
+/* Expand a looot on this*/
+export const validateHTMLString = (string) => {
+    if (string === null || string === undefined || string === "") {
+        return "";
+    }
+    return string;
 }
