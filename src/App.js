@@ -1,6 +1,6 @@
 import './App.css';
 import Optionsbox from './components/optionsList/optionsbox';
-import DragDrop from './components/draganddrop/dropzone';
+import FileList from './components/draganddrop/inhouse/filelist';
 
 function App() {
   return (
@@ -8,9 +8,7 @@ function App() {
       <div>Navbar</div>
       <div>Central text</div>
       <Optionsbox />
-      <div className="text-center">
-        <DragDrop />
-      </div>
+      <FileList />
     </div>
   );
 }
