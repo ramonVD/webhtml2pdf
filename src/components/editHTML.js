@@ -37,11 +37,11 @@ export function editHTML(document) {
 
     increaseElementsFontSize(FindByStyleAttr("fontSize"), AUGMENTAR_MIDA_FONT_PX);
 
-    replaceVideos();
+    replaceVideos(document);
       
-    replaceNBSP();
+    replaceNBSP(document);
 
-    eliminateBookDetails();
+    eliminateBookDetails(document);
 
     return document;
   }
@@ -71,7 +71,7 @@ export function editHTML(document) {
     });
   }
 
-  function replaceVideos() {
+  function replaceVideos(document) {
     var iframes = document.querySelectorAll("iframe, .video-js");
     const arrayIframes = Array.from(iframes);
     const videoSrcs = arrayIframes.map(function(el) {
@@ -106,14 +106,14 @@ export function editHTML(document) {
     return newDiv;
   }
 
-  function replaceNBSP() {
+  function replaceNBSP(document) {
     const ps = document.querySelectorAll("p");
     ps.forEach( function(el) {
         el.innerHTML = el.innerHTML.replace(/&nbsp;/g, " ");
       });
   }
 
-  function eliminateBookDetails() {
+  function eliminateBookDetails(document) {
     const bookDetailsTable = document.querySelector(".book_info");
     let tableDetails;
     if (bookDetailsTable) { 

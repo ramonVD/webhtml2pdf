@@ -1,17 +1,29 @@
 /*Adapted from:
  https://codesandbox.io/s/github/dineshselvantdm/drag-drop-file-upload-react-hooks?file=/utils/drag-drop.js*/
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { fileValidator, preventBrowserDefaults } from "./draganddroputils";
+import ContentFrame from "../contentFrame";
 
 const DragAndDrop = ({ processDrop, children, config }) => {
   let [dragOverlay, setDragOverlay] = useState(false);
   const [data, setData] = useState(false);
   const [error, setError] = useState(false);
   let dragCounter = useRef(0);
+  const clickInputRef = useRef(null);
 
+  useEffect( () => {
+    const processData = (a) => processDrop(a);
+    if (data) {
+      processData(data);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
+
+  
   const handleDrag = e => {
     preventBrowserDefaults(e);
   };
+
   const handleDragIn = e => {
     preventBrowserDefaults(e);
     dragCounter.current++;
@@ -40,14 +52,12 @@ const DragAndDrop = ({ processDrop, children, config }) => {
       }
       return false;
     }
-    fileReader(files);
-    processDrop(data);
+      fileReader(files);
   };
 
   const handleSelectFile = (e)=> {
       const file = [e.target.files[0]];
       fileReader(file);
-      processDrop(data);
   }
 
   const fileReader = files => {
@@ -58,17 +68,19 @@ const DragAndDrop = ({ processDrop, children, config }) => {
     };
   };
 
+
   const dragOverlayClass = dragOverlay ? "border-red-800 bg-grey-500" : "";
   return (
     <div>
       {error && <p className="text-red-800">{error}</p>}
       <div
-        className={`h-96 w-96 d-inline-block ${dragOverlayClass}`}
+        className={`h-96 w-96 basis-full mb-5 ${dragOverlayClass}`}
         style={{border: "dashed rgb(206, 206, 206) 3px"}}
         onDragEnter={handleDragIn}
         onDragLeave={handleDragOut}
         onDragOver={handleDrag}
         onDrop={handleDrop}
+        onClick={() => {clickInputRef.current.click();}}
       >
         {children}
        
@@ -81,8 +93,9 @@ const DragAndDrop = ({ processDrop, children, config }) => {
       </div>
       <label htmlFor="fileAccept">Or select a file:&nbsp;</label>
           <input type="file" name="fileAccept" 
-          accept=".html" multiple={false}
-          onChange={handleSelectFile} /> 
+          accept=".html" multiple={false} ref={clickInputRef}
+          onChange={handleSelectFile} />
+      <ContentFrame iframeContent={data} /> 
     </div>
   );
 };

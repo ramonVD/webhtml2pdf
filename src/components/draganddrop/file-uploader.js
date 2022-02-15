@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DragAndDrop from "./drag-and-drop";
 import { createDummyHTML, validateHTMLString } from "../parseHTMLFiles";
 import editHTML from "../editHTML";
-import converToPdf from "../htmlPdf";
+import convertToPdf from "../htmlPdf";
 
 const config = {
   allowedFileFormats: ["text/html"],
@@ -30,9 +30,11 @@ const FileUploader = () => {
     const editedHTML = editHTML(htmlElement);
     console.log(editedHTML);
     /*Convert that html element to pdf*/
-    const pdf = converToPdf(editedHTML);
+    const pdf = convertToPdf(editedHTML);
+    window.postMessage({ action: 'print_iframe' });
     /*Send pdf to user */
   };
+
   return (
     <>
       {loaderState === FILE_UPLOADER_STATE.INIT && (

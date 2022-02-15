@@ -1,3 +1,6 @@
+# Keep html pages to test here
+/test_html
+
 # Logs
 logs
 *.log

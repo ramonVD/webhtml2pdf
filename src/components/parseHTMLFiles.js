@@ -3,9 +3,9 @@ import sanitizeHtml from 'sanitize-html';
 RETURN IT AS AN HTML ELEMENT.
 SUPER EXPLOITY, NEED TO ADD CHECKS*/
 export const createDummyHTML = (htmlString) => {
-    const saneHTML = sanitizeHtml(htmlString);
+   // const saneHTML = sanitizeHtml(htmlString);
     const htmlElement = document.createElement( 'html' );
-    htmlElement.innerHTML = `<html>${saneHTML}</html>`;
+    htmlElement.innerHTML = `<!DOCTYPE html><html>${htmlString}</html>`;
     return htmlElement;
 }
 
