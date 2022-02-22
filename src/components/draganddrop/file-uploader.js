@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import DragAndDrop from "./drag-and-drop";
 import { createDummyHTML, validateHTMLString } from "../parseHTMLFiles";
 import editHTML from "../editHTML";
-import convertToPdf from "../htmlPdf";
 
 const config = {
   allowedFileFormats: ["text/html"],
@@ -27,12 +26,17 @@ const FileUploader = () => {
     /*Stringify it, use it to create an html element*/
     const htmlElement = createDummyHTML(validHTML);
     /*Apply changes to the html element*/
-    const editedHTML = editHTML(htmlElement);
-    console.log(editedHTML);
-    /*Convert that html element to pdf*/
+    return editHTML(htmlElement);
+    /* As of now, we send the edited html to an iframe and
+    print it in the browser window.
+
+
+    Doing it this way bc html 2 pdf converting 
+    methods have proven not very reliable, 
+    at least in javascript.
+    In the past - Convert that html element to pdf
     const pdf = convertToPdf(editedHTML);
-    window.postMessage({ action: 'print_iframe' });
-    /*Send pdf to user */
+    Send pdf to user.*/
   };
 
   return (

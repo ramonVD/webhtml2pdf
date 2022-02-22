@@ -2,22 +2,14 @@
  https://codesandbox.io/s/github/dineshselvantdm/drag-drop-file-upload-react-hooks?file=/utils/drag-drop.js*/
 import React, { useState, useRef, useEffect } from "react";
 import { fileValidator, preventBrowserDefaults } from "./draganddroputils";
-import ContentFrame from "../contentFrame";
+import ContentFrame from "../contentframe/contentFrame";
 
 const DragAndDrop = ({ processDrop, children, config }) => {
   let [dragOverlay, setDragOverlay] = useState(false);
-  const [data, setData] = useState(false);
+  const [data, setData] = useState("");
   const [error, setError] = useState(false);
   let dragCounter = useRef(0);
   const clickInputRef = useRef(null);
-
-  useEffect( () => {
-    const processData = (a) => processDrop(a);
-    if (data) {
-      processData(data);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
 
   
   const handleDrag = e => {
@@ -64,7 +56,7 @@ const DragAndDrop = ({ processDrop, children, config }) => {
     const reader = new FileReader();
     reader.readAsText(files[0]);
     reader.onload = loadEvt => {
-      setData(loadEvt.target.result);
+      setData(processDrop(loadEvt.target.result).innerHTML);
     };
   };
 
