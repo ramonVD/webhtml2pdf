@@ -1,22 +1,40 @@
 /*
-Changes to apply to an html document before it is converted to pdf.
+Changes to apply to an html document before the choice to print it as a pdf
+document is displayed.
 */
 
-/*Change this, it was executed on content load, need to just apply to a
-dummy html string with the content of the html file uploaded*/
-export function editHTML(document) {
+export function editHTML(document, options) {
     /*Per defecte aplica padding i margin i assigna un color a la vora inferior 
       de cada tab-pane (excepte l'últim) dins un element amb "pestanyes". Canviar aquí.*/
-    const PADDING_INFERIOR_TABS = 10;
-    const MARGIN_INFERIOR_TABS = 15;
-    const VORA_INFERIOR_TABS = "2px solid black";
+    const openedTabsCSS = {
+      PADDING_INFERIOR_TABS: 10,
+      MARGIN_INFERIOR_TABS: 15,
+      VORA_INFERIOR_TABS: "2px solid black"
+    }
     //Canviar la nova mida de la font a conveniencia
-    const MIDA_FONT = "1.2em";
+    const MIDA_FONT = "1.4em";
     //Augmenta la mida de lletra amb mida fixa, p.ex 16px -> 20px
-    const AUGMENTAR_MIDA_FONT_PX = 4;
+    const AUGMENTAR_MIDA_FONT_PX = 8;
 
-
+    //Increase body font size
     document.getElementsByTagName("body")[0].style.fontSize = MIDA_FONT;
+
+    openAllCollapsablesAndTabs(document, openedTabsCSS);
+
+    //Increase font size of elements with a defined font-size in px too.
+    increaseElementsFontSize(FindByStyleAttr(document, "fontSize"), AUGMENTAR_MIDA_FONT_PX);
+
+    replaceVideosWithLink(document);
+      
+    removeNBSP(document);
+
+    eliminateBookExtraDetails(document);
+
+    return document;
+  }
+
+
+  function openAllCollapsablesAndTabs(document, cssOptions) {
     var collapsables = document.querySelectorAll(".collapse");
     collapsables.forEach(function(collapsable) {
       collapsable.style.display = "block";
@@ -27,29 +45,17 @@ export function editHTML(document) {
       tabs.forEach(function(tab, index, array) {
         tab.style.display = "block";
         tab.style.opacity = "1";
-        tab.style.marginBottom = (parseInt(tab.style.marginBottom) || 0) + MARGIN_INFERIOR_TABS + "px";
-        tab.style.paddingBottom = (parseInt(tab.style.paddingBottom) || 0) + PADDING_INFERIOR_TABS + "px";
+        tab.style.marginBottom = (parseInt(tab.style.marginBottom) || 0) + cssOptions.MARGIN_INFERIOR_TABS + "px";
+        tab.style.paddingBottom = (parseInt(tab.style.paddingBottom) || 0) + cssOptions.PADDING_INFERIOR_TABS + "px";
         if (index < array.length - 1) {
-          tab.style.borderBottom = VORA_INFERIOR_TABS;
+          tab.style.borderBottom = cssOptions.VORA_INFERIOR_TABS;
         }
       });
     });
-
-    increaseElementsFontSize(FindByStyleAttr("fontSize"), AUGMENTAR_MIDA_FONT_PX);
-
-    replaceVideos(document);
-      
-    replaceNBSP(document);
-
-    eliminateBookDetails(document);
-
-    return document;
   }
 
 
-
-
-  function FindByStyleAttr(attribute) {
+  function FindByStyleAttr(document, attribute) {
     var All = document.getElementsByTagName("*");
     const foundElements = [];
     for (var i = 0; i < All.length; i++) {
@@ -71,7 +77,7 @@ export function editHTML(document) {
     });
   }
 
-  function replaceVideos(document) {
+  function replaceVideosWithLink(document) {
     var iframes = document.querySelectorAll("iframe, .video-js");
     const arrayIframes = Array.from(iframes);
     const videoSrcs = arrayIframes.map(function(el) {
@@ -106,14 +112,14 @@ export function editHTML(document) {
     return newDiv;
   }
 
-  function replaceNBSP(document) {
+  function removeNBSP(document) {
     const ps = document.querySelectorAll("p");
     ps.forEach( function(el) {
         el.innerHTML = el.innerHTML.replace(/&nbsp;/g, " ");
       });
   }
 
-  function eliminateBookDetails(document) {
+  function eliminateBookExtraDetails(document) {
     const bookDetailsTable = document.querySelector(".book_info");
     let tableDetails;
     if (bookDetailsTable) { 
