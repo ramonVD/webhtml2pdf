@@ -5,6 +5,7 @@ AND PRINTS ITS CONTENTS AFTER LOADING IT.*/
 const ContentFrame = (props) => {
 
 const {iframeContent} = props || "";
+const {handleStateChange} = props || function() {};
 const ifID = "ifContentLoader";
 
   useEffect(() => {
@@ -29,6 +30,7 @@ const ifID = "ifContentLoader";
     const handleLoad = (event) => {
       if (event.target.srcdoc !== "") {
         printIFContents(ifID);
+        handleStateChange("SUCCESS");
       }
     }
 
@@ -41,7 +43,7 @@ const ifID = "ifContentLoader";
 
 
 return (
-    <iframe src="" className=""
+    <iframe src="" className="hidden"
     title="Hidden Content Loader" name="HCl" id={ifID}
     srcDoc={iframeContent}></iframe>
 )    

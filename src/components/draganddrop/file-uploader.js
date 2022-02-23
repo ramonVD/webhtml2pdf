@@ -16,10 +16,21 @@ const FILE_UPLOADER_STATE = {
   FAILURE: "FAILURE"
 };
 
+const FILE_UPLOADER_STATE_JSX = {
+  INIT: <>
+        <div>Drag and drop files here</div>
+        <div>State machine based on file upload</div>
+        </>,
+  PROCESSING: <>on it</>,
+  SUCCESS: <div className="pb-3">done, press here again to re-print</div>,
+  FAILURE: <>fk</>
+}
+
 const FileUploader = () => {
-  const [loaderState, setLoaderState] = useState(FILE_UPLOADER_STATE.INIT);
   /*All this should go to a separate function in processHTML.js or w/e*/
+  const [loaderState, setLoaderState] = useState(FILE_UPLOADER_STATE.INIT)
   const processDrop = HTMLString => {
+    setLoaderState("PROCESSING");
     /*Validate that its a real html file*/
     const validHTML = validateHTMLString(HTMLString);
     if (validHTML === "") { return; }
@@ -39,29 +50,13 @@ const FileUploader = () => {
     Send pdf to user.*/
   };
 
+
+
   return (
-    <>
-      {loaderState === FILE_UPLOADER_STATE.INIT && (
-        <DragAndDrop processDrop={processDrop} config={config}>
-          <div>Drag and drop files here</div>
-          <div>State machine based on file upload</div>
+        <DragAndDrop processDrop={processDrop} config={config}
+        handleStateChange={setLoaderState}>
+          {FILE_UPLOADER_STATE_JSX[loaderState]}
         </DragAndDrop>
-      )}
-      {loaderState === FILE_UPLOADER_STATE.PROCESSING && (
-        <div className="h-96 w-96 d-inline-block" 
-        style={{border: "dashed rgb(206, 206, 206) 3px"}}>Processing...</div>
-      )}
-      {loaderState === FILE_UPLOADER_STATE.SUCCESS && (
-        <div className="h-96 w-96 d-inline-block" 
-        style={{border: "dashed rgb(206, 206, 206) 3px"}}>File Upload done!</div>
-      )}
-      {loaderState === FILE_UPLOADER_STATE.FAILURE && (
-        <div className="h-96 w-96 d-inline-block" 
-        style={{border: "dashed rgb(206, 206, 206) 3px"}}>
-          File Upload failed. Please try again!
-        </div>
-      )}
-    </>
   );
 };
 
