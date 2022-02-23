@@ -4,6 +4,7 @@ document is displayed.
 */
 
 export function editHTML(document, options) {
+
     /*Per defecte aplica padding i margin i assigna un color a la vora inferior 
       de cada tab-pane (excepte l'últim) dins un element amb "pestanyes". Canviar aquí.*/
     const openedTabsCSS = {
@@ -12,9 +13,9 @@ export function editHTML(document, options) {
       VORA_INFERIOR_TABS: "2px solid black"
     }
     //Canviar la nova mida de la font a conveniencia
-    const MIDA_FONT = "1.4em";
+    const MIDA_FONT = options.bodyFontSize + options.selectedFontType;
     //Augmenta la mida de lletra amb mida fixa, p.ex 16px -> 20px
-    const AUGMENTAR_MIDA_FONT_PX = 8;
+    const AUGMENTAR_MIDA_FONT_PX = options.increaseFixedSize;
 
     //Increase body font size
     document.getElementsByTagName("body")[0].style.fontSize = MIDA_FONT;
@@ -24,9 +25,13 @@ export function editHTML(document, options) {
     //Increase font size of elements with a defined font-size in px too.
     increaseElementsFontSize(FindByStyleAttr(document, "fontSize"), AUGMENTAR_MIDA_FONT_PX);
 
-    replaceVideosWithLink(document);
-      
-    removeNBSP(document);
+    if (options.videoLinkOnly) {
+      replaceVideosWithLink(document);
+    }
+     
+    if (options.noNbsp) {
+      removeNBSP(document);
+    }
 
     eliminateBookExtraDetails(document);
 
