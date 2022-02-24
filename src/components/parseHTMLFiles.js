@@ -1,6 +1,5 @@
 /*PARSE THAT THE UPLOADED DOCUMENT IS VALID HTML, THEN SANITIZE IT AND
 RETURN IT AS AN HTML ELEMENT.
-SUPER EXPLOITY, NEED TO ADD LOTS OF CHECKS.
 PROBABLY TEST SOME MORE AND ADD CHANGES
 NOTE: not using sanitizeHtml since our use case documents contain a lot of non-standard
 stuff. Using sanitizeHtml removed most of the stuff that also needed to be printed...*/

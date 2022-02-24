@@ -13,8 +13,11 @@ export function editHTML(document, options) {
       VORA_INFERIOR_TABS: "2px solid black"
     }
     //Canviar la nova mida de la font a conveniencia
+    //Pot arribar la opcio buida, en teoria mai negativa però per si de cas...
+    if (options.bodyFontSize === "" || options.bodyFontSize < 0) { options.bodyFontSize = 0;} //potser 1?
     const MIDA_FONT = options.bodyFontSize + options.selectedFontType;
     //Augmenta la mida de lletra amb mida fixa, p.ex 16px -> 20px
+    if (options.increaseFixedSize === "" || options.increaseFixedSize < 0) { options.increaseFixedSize = 0;}
     const AUGMENTAR_MIDA_FONT_PX = options.increaseFixedSize;
 
     //Increase body font size

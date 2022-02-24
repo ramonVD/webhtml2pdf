@@ -1,8 +1,14 @@
+/*File uploader with drag and drop adapted from:
+ https://codesandbox.io/s/github/dineshselvantdm/drag-drop-file-upload-react-hooks?file=/utils/drag-drop.js*/
 import React, { useState} from "react";
 import DragAndDrop from "./draganddrop/drag-and-drop";
 import { createCleanHTMLElement, NonEmptyHTMLString } from "../parseHTMLFiles";
 import editHTML from "../editHTML";
 import Optionsbox from "./optionsList/optionsbox"
+
+/*Element that consists of a drag and drop box + file input, to let the user upload
+a single html file. That file's contents will be edited first, then drawn on the page
+and displayed for the user to be printed as a pdf.*/
 
 const config = {
   allowedFileFormats: ["text/html"],
@@ -31,12 +37,15 @@ const FILE_UPLOADER_STATE = {
 
 const FILE_UPLOADER_STATE_JSX = {
   INIT: <>
-        <div>Drag and drop files here</div>
-        <div>State machine based on file upload</div>
+        <div className="md:text-lg py-2">Arrossega un arxiu html dins aquesta capsa</div>
+        <div className="md:text-lg">O clica-la</div>
         </>,
-  PROCESSING: <>on it</>,
-  SUCCESS: <div className="pb-3">done, press here again to print another one</div>,
-  FAILURE: <>fk</>
+  PROCESSING: <div className="mb-4">Editant l'arxiu i preparant-lo per passar a pdf...</div>,
+  SUCCESS: <>
+            <div className="md:text-2xl py-3 text-green-500 font-bold">Fet</div>
+            <div className="md:text-lg mb-4">prem un altre cop per buscar un altre arxiu</div>
+          </>,
+  FAILURE: <>Hi ha hagut algun error carregant l'arxiu</>
 }
 
 const FileUploader = () => {
@@ -66,7 +75,7 @@ const FileUploader = () => {
   const [loaderState, setLoaderState] = useState(FILE_UPLOADER_STATE.INIT);
 
   const processDrop = HTMLString => {
-    setLoaderState("PROCESSING");
+    setLoaderState(FILE_UPLOADER_STATE.PROCESSING);
     /*Validate that its a real html file*/
     const nonEmptyHTML = NonEmptyHTMLString(HTMLString);
     if (nonEmptyHTML === "") { return; }
@@ -89,8 +98,8 @@ const FileUploader = () => {
 
   return (
     <div>
-        <Optionsbox optionsProps={{...currentOptions, ...optionsSetters}} />
-      <div className="flex flex-col flex-wrap items-center justify-center py-3">
+      <Optionsbox optionsProps={{...currentOptions, ...optionsSetters}} />
+      <div className="flex">
         <DragAndDrop processDrop={processDrop} config={config}
                       handleUploadChange={setLoaderState}>
           {FILE_UPLOADER_STATE_JSX[loaderState]}
