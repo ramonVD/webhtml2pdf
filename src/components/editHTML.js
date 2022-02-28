@@ -88,7 +88,7 @@ export function editHTML(document, options) {
   function replaceVideosWithLink(document) {
     var iframes = document.querySelectorAll("iframe, .video-js");
     const arrayIframes = Array.from(iframes);
-    const videoSrcs = arrayIframes.map(function(el) {
+    const videoSrcs = arrayIframes.map( function(el) {
       if (el.tagName.toLowerCase() === "iframe") {
         return el.src;
       } else if (el.tagName.toLowerCase() === "video") {
@@ -98,6 +98,7 @@ export function editHTML(document, options) {
           return videoAttr["sources"][0]["src"];
         }
       }
+      return "";
     });
     let newElement;
     for (let i = 0; i < arrayIframes.length; i++) {
@@ -113,8 +114,8 @@ export function editHTML(document, options) {
     const p = document.createElement("p");
     p.innerHTML = "Vídeo:&nbsp;&nbsp;&nbsp;";
     const newLink = document.createElement('a');
-    newLink.innerText = src;
-    newLink.href = src;
+    newLink.innerText = (src === "") ? "No trobat" : src;
+    newLink.href = (src === "") ?  "#" : src;
     p.appendChild(newLink);
     newDiv.appendChild(p);
     return newDiv;

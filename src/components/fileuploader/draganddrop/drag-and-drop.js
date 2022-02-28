@@ -66,7 +66,7 @@ const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
     <div className="mx-auto w-full">
       {error && <p className="text-red-800">{error}</p>}
       <div
-        className={`h-full sm:w-1/2 w-full my-5 py-12 mx-auto text-slate-600 ${dragOverlayClass}`}
+        className={`h-full xl:w-1/2 md:5/6 w-11/12 my-5 py-12 mx-auto text-slate-600 ${dragOverlayClass}`}
         style={{border: "dashed rgb(206, 206, 206) 3px"}}
         onDragEnter={handleDragIn}
         onDragLeave={handleDragOut}

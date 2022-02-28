@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useRef} from "react";
+import styles from "./infoModal.module.css"
 
 const InfoModal = ({buttonText, children}) => {
 
@@ -21,22 +22,23 @@ const InfoModal = ({buttonText, children}) => {
         }
     })
 
-    const hideModalClasses = open ? "" : " hidden";
+    const hideModalClasses = open ? "" : " hidden ";
     //Passar els styles a classes de tailwinds
     return (
         <div>
-            <button className="bg-sky-50 hover:bg-sky-100 sm:text-3xl text-xl font-bold sm:px-5 px-4 py-1 sm:border-2 border border-sky-400 rounded"
+            <button className="bg-sky-100 hover:bg-sky-200 sm:text-3xl text-xl font-bold sm:px-5 px-4 py-1 sm:border-2 border border-sky-400 rounded"
             onClick={() => {handleToggleModal();}} >
             {buttonText}
             </button>
-            <div id="myModal" className={hideModalClasses} ref={modalRef}
+            <div id="myModal" className={hideModalClasses + styles.appearModal} ref={modalRef}
             style={{
-                position: "fixed", zIndex: "100",left: "0", top: "0", width: "100%",height: "100%", overflow: "auto", backgroundColor: "rgb(0,0,0)",
+                position: "fixed", zIndex: "100",left: "0", top: "0", width: "100%",
+                height: "100%", overflow: "auto", backgroundColor: "rgb(0,0,0)",
                 // eslint-disable-next-line no-dupe-keys
                 backgroundColor: "rgba(0,0,0,0.4)"
               }}>
-                <div className="modal-content "
-                style= {{  backgroundColor: "#fefefe", margin: "15% auto", padding: "20px", border: "1px solid #888", width: "80%"}}>
+                <div className="modal-content text-left p-5 md:w-3/4 w-11/12"
+                style= {{  backgroundColor: "#fefefe", margin: "7% auto", border: "1px solid #888"}}>
                     <span className="close cursor-pointer relative float-right" style={{position:"relative",float:"right",color: "#aaa",right: "right", top:"-25px", fontSize: "28px", fontWeight: "bold"}}
                     onClick={() => {handleToggleModal();}}>&times;</span>
                     {children}

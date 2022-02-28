@@ -17,7 +17,7 @@ const Optionsbox = ({optionsProps}) => {
     const interiorHeight = (open) ? accordionPanel.current.nextElementSibling.scrollHeight : 0;
     const panelStyle = {maxHeight: interiorHeight, padding: "0 18px", backgroundColor: "white", overflow: "hidden", transition: "0.4s", zIndex:"20"}
     return (
-        <div className="bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer pb-2 pt-3 px-3 border border-gray-400 rounded my-4 sm:w-1/2 w-full sm:text-base text-xs mx-auto"
+        <div className="bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer pb-2 pt-3 px-3 border border-gray-400 rounded my-4 xl:w-1/2 md:5/6 w-11/12 sm:text-base text-xs mx-auto"
             ref={accordionPanel}
             onClick={() => {handleToggleAccordion();}}>
                 <span className="text-xl font-bold">Opcions</span>
@@ -33,20 +33,20 @@ const Optionsbox = ({optionsProps}) => {
                             handleChange={(e) => {setIncreaseFixedSize(getANumber(e.target.value))}} />
                     </div>
                     <div className="flex mb-4 w-full justify-around">
-                        <div className="flex mb-4 p-2">
-                                <input className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" 
-                                type="checkbox" checked={videoLinkOnly} id="flexCheckDefault2"
-                                onChange={() => {setVideoLinkOnly(!videoLinkOnly)}} />
-                                <label className="form-check-label inline-block text-gray-800" htmlFor="flexCheckChecked">
-                                Canvia imatge dels vídeos pel seu enllaç
+                        <div className="flex mb-4 px-2">
+                                <label class="inline-flex items-center mt-3">
+                                    <input className="form-checkbox h-5 w-5 text-indigo-600 cursor-pointer transition-all delay-150"
+                                    type="checkbox" checked={videoLinkOnly} id="videoLink" 
+                                    onChange={() => {setVideoLinkOnly(!videoLinkOnly)}} />
+                                    <span class="ml-2 text-gray-700">Canvia imatge dels vídeos pel seu enllaç</span>
                                 </label>
                         </div>
-                        <div className="flex mb-4 p-2">
-                                <input className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" 
-                                type="checkbox" checked={noNbsp} id="flexCheckDefault2" 
-                                onChange={() => {setNoNbsp(!noNbsp)}}/>
-                                <label className="form-check-label inline-block text-gray-800" htmlFor="flexCheckChecked">
-                                Elimina espais en blanc extra
+                        <div className="flex mb-4 px-2">
+                                <label class="inline-flex items-center mt-3">
+                                    <input className="form-checkbox h-5 w-5 text-indigo-600 cursor-pointer transition-all delay-150"
+                                    type="checkbox" checked={noNbsp} id="noNbsp" 
+                                    onChange={() => {setNoNbsp(!noNbsp)}} />
+                                    <span class="ml-2 text-gray-700">Elimina espais en blanc extra</span>
                                 </label>
                         </div>
                     </div>
