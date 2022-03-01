@@ -1,0 +1,12 @@
+@keyframes appear {
+ 0% {
+    opacity: 0%;
+ }
+ 100% {
+     opacity: 100%;
+ }
+}
+
+  .appearModal {
+      animation: appear 500ms 1;
+  }

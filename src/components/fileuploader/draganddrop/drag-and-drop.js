@@ -1,23 +1,13 @@
-/*Adapted from:
- https://codesandbox.io/s/github/dineshselvantdm/drag-drop-file-upload-react-hooks?file=/utils/drag-drop.js*/
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { fileValidator, preventBrowserDefaults } from "./draganddroputils";
-import ContentFrame from "../contentFrame";
+import ContentFrame from "../../contentframe/contentFrame";
 
-const DragAndDrop = ({ processDrop, children, config }) => {
+const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
   let [dragOverlay, setDragOverlay] = useState(false);
-  const [data, setData] = useState(false);
+  const [data, setData] = useState("");
   const [error, setError] = useState(false);
   let dragCounter = useRef(0);
   const clickInputRef = useRef(null);
-
-  useEffect( () => {
-    const processData = (a) => processDrop(a);
-    if (data) {
-      processData(data);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
 
   
   const handleDrag = e => {
@@ -57,24 +47,26 @@ const DragAndDrop = ({ processDrop, children, config }) => {
 
   const handleSelectFile = (e)=> {
       const file = [e.target.files[0]];
+      setError(false);
       fileReader(file);
   }
 
   const fileReader = files => {
+    setData("");
     const reader = new FileReader();
     reader.readAsText(files[0]);
     reader.onload = loadEvt => {
-      setData(loadEvt.target.result);
+      setData(processDrop(loadEvt.target.result).innerHTML);
     };
   };
 
-
   const dragOverlayClass = dragOverlay ? "border-red-800 bg-grey-500" : "";
+  
   return (
-    <div>
+    <div className="mx-auto w-full">
       {error && <p className="text-red-800">{error}</p>}
       <div
-        className={`h-96 w-96 basis-full mb-5 ${dragOverlayClass}`}
+        className={`h-full xl:w-1/2 md:5/6 w-11/12 my-5 py-12 mx-auto text-slate-600 ${dragOverlayClass}`}
         style={{border: "dashed rgb(206, 206, 206) 3px"}}
         onDragEnter={handleDragIn}
         onDragLeave={handleDragOut}
@@ -85,17 +77,28 @@ const DragAndDrop = ({ processDrop, children, config }) => {
         {children}
        
         <div className="button-wrapper">
-          {data && 
-          <button className="bg-green-800 text-black-800 p-4"
-          onClick={() => setData(false)}>Remove</button>
+          {data !== "" && 
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={(e) => {
+            setData("");
+            clickInputRef.current.value = null;
+            handleUploadChange("INIT");
+            e.preventDefault();
+            e.stopPropagation();}}>
+            Elimina l'arxiu</button>
           }
         </div>
       </div>
-      <label htmlFor="fileAccept">Or select a file:&nbsp;</label>
-          <input type="file" name="fileAccept" 
+      <div className="text-center">
+        <label htmlFor="fileAccept" className="mb-5 text-center">També pots prémer aquí -&nbsp;</label>
+        <input type="file" name="fileAccept" 
           accept=".html" multiple={false} ref={clickInputRef}
-          onChange={handleSelectFile} />
-      <ContentFrame iframeContent={data} /> 
+          onChange={handleSelectFile} className="mb-5"/>
+          
+        <ContentFrame iframeContent={data} 
+        handleUploadChange={handleUploadChange} /> 
+      </div>
+      <div className="text-sm text-slate-300 mt-5 text-center">Made by Ramon Vicente, 2022</div>
     </div>
   );
 };

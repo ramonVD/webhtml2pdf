@@ -1,3 +1,4 @@
+//DEPRECATED
 const convertToPdf = async (htmlElement) =>  {
 }
 

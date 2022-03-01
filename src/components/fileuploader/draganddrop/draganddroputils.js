@@ -12,12 +12,12 @@ export const fileValidator = (files, config) => {
     } else if (length > filesLimit) {
       err =
         filesLimit > 1
-          ? `Only ${filesLimit} files are allowed to upload`
-          : `Only one file is allowed to upload`;
+          ? `Només pots pujar ${filesLimit} arxius cada cop`
+          : `Només pots pujar un arxiu cada cop`;
     } else if (!allowedFileFormats.includes(type)) {
-      err = "File format must be html";
+      err = "El format de l'arxiu ha de ser html";
     } else if (size / 1024 / 1024 > fileSizeMBLimit) {
-      err = `File size exceeded the limit of ${fileSizeMBLimit}MB`;
+      err = `L'arxiu pesa més de ${fileSizeMBLimit}MB`;
     } else {
       result.isValidFile = true;
     }
