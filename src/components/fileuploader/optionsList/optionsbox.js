@@ -20,7 +20,7 @@ const Optionsbox = ({optionsProps}) => {
     const interiorHeight = (open) ? accordionPanel.current.nextElementSibling.scrollHeight : 0;
     const panelStyle = {maxHeight: interiorHeight, padding: "0 18px", backgroundColor: "white", overflow: "hidden", transition: "0.4s", zIndex:"20"}
     return (
-        <div className="bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer pb-2 pt-3 px-3 border border-gray-400 rounded my-4 xl:w-1/2 md:5/6 w-11/12 sm:text-base text-xs mx-auto"
+        <div className="bg-gray-100 text-center hover:bg-gray-200 text-gray-700 cursor-pointer pb-2 pt-3 px-3 border border-gray-400 rounded my-4 xl:w-1/2 md:5/6 w-11/12 sm:text-base text-xs mx-auto"
             ref={accordionPanel}
             onClick={() => {handleToggleAccordion();}}>
                 <span className="text-xl font-bold">Opcions</span>

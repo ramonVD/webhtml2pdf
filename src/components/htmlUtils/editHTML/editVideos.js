@@ -99,7 +99,10 @@ function getLazyVideoSrc(videoElement) {
   const videoAttrStr = videoElement.getAttribute("data-setup-lazy");
   if (videoAttrStr !== undefined) {
     const videoAttr = JSON.parse(videoAttrStr);
-    return videoAttr["sources"][0]["src"];
+    if (videoAttr.hasOwnProperty("sources") && videoAttr["sources"].length > 0 
+      && videoAttr["sources"][0].hasOwnProperty("src")) { 
+      return videoAttr["sources"][0]["src"];
+    }
   }
   return "";
 }

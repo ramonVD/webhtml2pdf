@@ -64,7 +64,7 @@ const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
   const dragOverlayClass = dragOverlay ? "border-red-800 bg-grey-500" : "";
   
   return (
-    <div className="mx-auto w-full">
+    <div className="mx-auto w-full text-center">
       {error && <p className="text-red-800">{error}</p>}
       <div
         className={`h-full xl:w-1/2 md:5/6 w-11/12 my-5 py-12 mx-auto text-slate-600 ${dragOverlayClass}`}

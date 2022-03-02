@@ -11,6 +11,7 @@ export const createCleanHTMLElement = (htmlString) => {
     htmlString.replace(/<script(?:(?!\/\/)(?!\/\*)[^'"]|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\/\/.*(?:\n)|\/\*(?:(?:.|\s))*?\*\/)*?<\/script>/img, "");
     const htmlElement = document.createElement( 'html' );
     htmlElement.innerHTML = `<!DOCTYPE html><html>${saneHTML}</html>`;
+    removeSuperfluosHeadElements(htmlElement.getElementsByTagName("head")[0]);
     return htmlElement;
 }
 
@@ -23,4 +24,16 @@ export const NonEmptyHTMLString = (string) => {
         return "";
     }
     return string;
+}
+
+
+/*Remove meta elements, icon links and stuff like that*/
+const removeSuperfluosHeadElements = (head) => {
+    const headElements = head.querySelectorAll("link, meta");
+    const allowedRels = ["preconnect", "stylesheet"];
+    for (let el of headElements) {
+        if (el.tagName.toLowerCase() === "meta" || !allowedRels.includes(el.rel)) {
+            el.remove();
+        }
+    }
 }

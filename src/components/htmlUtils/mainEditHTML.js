@@ -1,18 +1,17 @@
 import { replaceVideosWithLink, createVideosThumbnail } from "./editHTML/editVideos";
+import setupTableElementsForPrint from "./editHTML/bootstrapEdits";
 
 /*
 Changes to apply to an html document before the choice to print it as a pdf
 document is displayed. Need to make modular as it grows
 */
-const BOOTSTRAP_HREF = "https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css";
+/*const BOOTSTRAP_HREF = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";*/
 
 export function editHTML(htmlElement, options) {
 
     /*Inserta la llibreria de bootstrap al document, ja que per defecte l'eliminem abans al sanititzar l'html.
     Posar-ho com una opció potser millor?*/
-    htmlElement.getElementsByTagName("head")[0].appendChild(createBootstrapLink());
-
-
+ 
     /*Per defecte aplica padding i margin i assigna un color a la vora inferior 
       de cada tab-pane (excepte l'últim) dins un element amb "pestanyes". Canviar aquí.*/
     const openedTabsCSS = {
@@ -32,11 +31,13 @@ export function editHTML(htmlElement, options) {
     https://stackoverflow.com/questions/34534231/page-break-insideavoid-not-working
     because or DOM tree has flex styled grandparents, which are needed... Added the media
     query in the CSS but that's not reliable.*/
-    
+
     //Increase body font size
     htmlElement.getElementsByTagName("body")[0].style.fontSize = MIDA_FONT;
 
     openAllCollapsablesAndTabs(htmlElement, openedTabsCSS);
+
+    setupTableElementsForPrint(htmlElement);
 
     //Increase font size of elements with a defined font-size in px too.
     increaseElementsFontSize(FindByStyleAttr(htmlElement, "fontSize"), AUGMENTAR_MIDA_FONT_PX);
@@ -124,12 +125,14 @@ export function editHTML(htmlElement, options) {
     }
   }
 
-  const createBootstrapLink = () => {
+  /*const createBootstrapLink = () => {
     const bootstrapLink = document.createElement('link');
     bootstrapLink.rel = 'stylesheet';
     bootstrapLink.href = BOOTSTRAP_HREF;
+    bootstrapLink.integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T";
+    bootstrapLink.crossOrigin="anonymous";
     return bootstrapLink;
-  }
+  }*/
 
 
 export default editHTML;
