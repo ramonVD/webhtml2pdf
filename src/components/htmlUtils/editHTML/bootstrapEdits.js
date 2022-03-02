@@ -5,8 +5,9 @@ despite the default styles applied.*/
 const fixTableBackground = (table) => {
     const tableChildren = Array.from(table.querySelectorAll("tr, td, th"));
     tableChildren.forEach( tableChild => {
+        //THIS WILL NOT APPLY TO TRs, need TO MAKE THE SOLUTION FROM BTS CLASSES TO THIS TOO FOR TRs
         if (tableChild.style.backgroundColor !== "") {
-            tableChild.style.setProperty("background-color", tableChild.style.backgroundColor , "important");
+            propagateBgColorToCells(tableChild, tableChild.style.backgroundColor);
         } else {
             //Check if it has bootstrap classes applied, then set that bg color to important
             const classList = Array.from(tableChild.classList);
@@ -16,13 +17,7 @@ const fixTableBackground = (table) => {
                     //match a la posicio 1 és el tipus de bg:
                     const finalbgColor = getBootstrapTableColor(tableClassMatch[1]);
                     if (finalbgColor !== "") {
-                        //Check if its a row or a single cell
-                        if (tableChild.tagName.toLowerCase() === "tr") {
-                            Array.from(tableChild.querySelectorAll("td, th")).forEach ( cell => {
-                                cell.style.setProperty("background-color", finalbgColor , "important");});
-                        } else {
-                            tableChild.style.setProperty("background-color", finalbgColor , "important");
-                        }
+                        propagateBgColorToCells(tableChild, finalbgColor);
                     }
                 }
             }
@@ -61,4 +56,14 @@ function getBootstrapTableColor(bootstrapClassName) {
       }
 }
 
+/* Applies the color to the cell or, in the case of rows, to all cells in the row.
+Needed because apparently row background colors arent shown while printing? (atleast on firefox)*/
+function propagateBgColorToCells(mainElement, color) {
+    if (mainElement.tagName.toLowerCase() === "tr") {
+        Array.from(mainElement.querySelectorAll("td, th")).forEach ( cell => {
+            cell.style.setProperty("background-color", color , "important");});
+    } else {
+        mainElement.style.setProperty("background-color", color , "important");
+    }
+}
 export default setupTableElementsForPrint;
