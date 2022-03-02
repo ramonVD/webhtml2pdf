@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { fileValidator, preventBrowserDefaults } from "./draganddroputils";
 import ContentFrame from "../../contentframe/contentFrame";
 
+/*Drag & drop box with associated events, also adapted (check fileuploader)*/
 const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
   let [dragOverlay, setDragOverlay] = useState(false);
   const [data, setData] = useState("");
@@ -90,7 +91,9 @@ const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
         </div>
       </div>
       <div className="text-center">
-        <label htmlFor="fileAccept" className="mb-5 text-center">També pots prémer aquí -&nbsp;</label>
+        <label htmlFor="fileAccept" className="mb-5 text-center">
+          També pots prémer aquí -&nbsp;
+        </label>
         <input type="file" name="fileAccept" 
           accept=".html" multiple={false} ref={clickInputRef}
           onChange={handleSelectFile} className="mb-5"/>
@@ -98,7 +101,9 @@ const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
         <ContentFrame iframeContent={data} 
         handleUploadChange={handleUploadChange} /> 
       </div>
-      <div className="text-sm text-slate-300 mt-5 text-center">Made by Ramon Vicente, 2022</div>
+      <div className="text-sm text-slate-300 mt-5 text-center">
+        Made by Ramon Vicente, 2022
+      </div>
     </div>
   );
 };

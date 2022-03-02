@@ -1,6 +1,9 @@
 import React, {useState, useRef} from "react";
 import { NumericalInput, NumericalInputWSelect} from "./inputs/numericalInputs";
+import Checkbox from "./inputs/checkboxes";
 
+/*Generates an accordion that contains an editable set of options that define what 
+settings to apply when editing the html file*/
 const Optionsbox = ({optionsProps}) => {
     const {bodyFontSize, setBodyFontSize} = optionsProps;
     const {selectedFontType, setSelectedFontType} = optionsProps;
@@ -34,20 +37,12 @@ const Optionsbox = ({optionsProps}) => {
                     </div>
                     <div className="flex mb-4 w-full justify-around">
                         <div className="flex mb-4 px-2">
-                                <label class="inline-flex items-center mt-3">
-                                    <input className="form-checkbox h-5 w-5 text-indigo-600 cursor-pointer transition-all delay-150"
-                                    type="checkbox" checked={videoLinkOnly} id="videoLink" 
-                                    onChange={() => {setVideoLinkOnly(!videoLinkOnly)}} />
-                                    <span class="ml-2 text-gray-700">Canvia imatge dels vídeos pel seu enllaç</span>
-                                </label>
+                            <Checkbox text={"Canvia imatge dels vídeos pel seu enllaç"} 
+                                checked={videoLinkOnly} setChecked={setVideoLinkOnly} />
                         </div>
                         <div className="flex mb-4 px-2">
-                                <label class="inline-flex items-center mt-3">
-                                    <input className="form-checkbox h-5 w-5 text-indigo-600 cursor-pointer transition-all delay-150"
-                                    type="checkbox" checked={noNbsp} id="noNbsp" 
-                                    onChange={() => {setNoNbsp(!noNbsp)}} />
-                                    <span class="ml-2 text-gray-700">Elimina espais en blanc extra</span>
-                                </label>
+                            <Checkbox text={"Elimina espais en blanc extra"} 
+                                checked={noNbsp} setChecked={setNoNbsp} />
                         </div>
                     </div>
                 </div>
@@ -56,7 +51,7 @@ const Optionsbox = ({optionsProps}) => {
 }
 
 /*Function to apply to a text after a new digit/letter/symbol has been added to that text.
-It removes all non-numbers* (it also leaves a single period if there are any)
+It removes all* non-numbers (*it also leaves a single period if there are any)
 from the text and returns it*/
 const getANumber = (text) => {
     let noLetters = text.replace(/[^0-9.]/g, "");

@@ -1,5 +1,7 @@
 import React from "react";
 
+/*React components that define numerical inputs (standard plus a numerical input with associated 
+    select + options)*/
 export const NumericalInput = ({ text, value, handleChange, options }) => {
     if (options === undefined) { options = {}}
     const defaultInputClasses = "appearance-none md:text-center block w-full text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"

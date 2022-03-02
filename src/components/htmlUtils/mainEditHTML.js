@@ -1,9 +1,17 @@
+import { replaceVideosWithLink, createVideosThumbnail } from "./editHTML/editVideos";
+
 /*
 Changes to apply to an html document before the choice to print it as a pdf
-document is displayed.
+document is displayed. Need to make modular as it grows
 */
+const BOOTSTRAP_HREF = "https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css";
 
-export function editHTML(document, options) {
+export function editHTML(htmlElement, options) {
+
+    /*Inserta la llibreria de bootstrap al document, ja que per defecte l'eliminem abans al sanititzar l'html.
+    Posar-ho com una opció potser millor?*/
+    htmlElement.getElementsByTagName("head")[0].appendChild(createBootstrapLink());
+
 
     /*Per defecte aplica padding i margin i assigna un color a la vora inferior 
       de cada tab-pane (excepte l'últim) dins un element amb "pestanyes". Canviar aquí.*/
@@ -20,34 +28,41 @@ export function editHTML(document, options) {
     if (options.increaseFixedSize === "" || options.increaseFixedSize < 0) { options.increaseFixedSize = 0;}
     const AUGMENTAR_MIDA_FONT_PX = options.increaseFixedSize;
 
+    /*Fixing image breaking between two pages when printing is not possible according to
+    https://stackoverflow.com/questions/34534231/page-break-insideavoid-not-working
+    because or DOM tree has flex styled grandparents, which are needed... Added the media
+    query in the CSS but that's not reliable.*/
+    
     //Increase body font size
-    document.getElementsByTagName("body")[0].style.fontSize = MIDA_FONT;
+    htmlElement.getElementsByTagName("body")[0].style.fontSize = MIDA_FONT;
 
-    openAllCollapsablesAndTabs(document, openedTabsCSS);
+    openAllCollapsablesAndTabs(htmlElement, openedTabsCSS);
 
     //Increase font size of elements with a defined font-size in px too.
-    increaseElementsFontSize(FindByStyleAttr(document, "fontSize"), AUGMENTAR_MIDA_FONT_PX);
+    increaseElementsFontSize(FindByStyleAttr(htmlElement, "fontSize"), AUGMENTAR_MIDA_FONT_PX);
 
     if (options.videoLinkOnly) {
-      replaceVideosWithLink(document);
+      replaceVideosWithLink(htmlElement);
+    } else {
+      createVideosThumbnail(htmlElement);
     }
      
     if (options.noNbsp) {
-      removeNBSP(document);
+      removeNBSP(htmlElement);
     }
 
-    eliminateBookExtraDetails(document);
+    eliminateBookExtraDetails(htmlElement);
 
-    return document;
+    return htmlElement;
   }
 
 
-  function openAllCollapsablesAndTabs(document, cssOptions) {
-    var collapsables = document.querySelectorAll(".collapse");
+  function openAllCollapsablesAndTabs(htmlElement, cssOptions) {
+    var collapsables = htmlElement.querySelectorAll(".collapse");
     collapsables.forEach(function(collapsable) {
       collapsable.style.display = "block";
     });
-    var tabsContainers = document.querySelectorAll(".tab-content");
+    var tabsContainers = htmlElement.querySelectorAll(".tab-content");
     tabsContainers.forEach(function(tabsContainer) {
       var tabs = tabsContainer.querySelectorAll(".tab-pane");
       tabs.forEach(function(tab, index, array) {
@@ -63,8 +78,8 @@ export function editHTML(document, options) {
   }
 
 
-  function FindByStyleAttr(document, attribute) {
-    var All = document.getElementsByTagName("*");
+  function FindByStyleAttr(htmlElement, attribute) {
+    var All = htmlElement.getElementsByTagName("*");
     const foundElements = [];
     for (var i = 0; i < All.length; i++) {
       if (All[i].style[attribute] && All[i].style[attribute] !== "") {
@@ -85,51 +100,17 @@ export function editHTML(document, options) {
     });
   }
 
-  function replaceVideosWithLink(document) {
-    var iframes = document.querySelectorAll("iframe, .video-js");
-    const arrayIframes = Array.from(iframes);
-    const videoSrcs = arrayIframes.map( function(el) {
-      if (el.tagName.toLowerCase() === "iframe") {
-        return el.src;
-      } else if (el.tagName.toLowerCase() === "video") {
-        const videoAttrStr = el.getAttribute("data-setup-lazy");
-        if (videoAttrStr !== undefined) {
-          const videoAttr = JSON.parse(videoAttrStr);
-          return videoAttr["sources"][0]["src"];
-        }
-      }
-      return "";
-    });
-    let newElement;
-    for (let i = 0; i < arrayIframes.length; i++) {
-      newElement = createVideoReplacement(videoSrcs[i]);
-      iframes[i].parentNode.replaceChild(newElement, iframes[i])
-    }
-  }
 
-  function createVideoReplacement(src) {
-    const newDiv = document.createElement('div');
-    newDiv.classList.add("py-5");
-    // style div
-    const p = document.createElement("p");
-    p.innerHTML = "Vídeo:&nbsp;&nbsp;&nbsp;";
-    const newLink = document.createElement('a');
-    newLink.innerText = (src === "") ? "No trobat" : src;
-    newLink.href = (src === "") ?  "#" : src;
-    p.appendChild(newLink);
-    newDiv.appendChild(p);
-    return newDiv;
-  }
 
-  function removeNBSP(document) {
-    const ps = document.querySelectorAll("p");
+  function removeNBSP(htmlElement) {
+    const ps = htmlElement.querySelectorAll("p");
     ps.forEach( function(el) {
         el.innerHTML = el.innerHTML.replace(/&nbsp;/g, " ");
       });
   }
 
-  function eliminateBookExtraDetails(document) {
-    const bookDetailsTable = document.querySelector(".book_info");
+  function eliminateBookExtraDetails(htmlElement) {
+    const bookDetailsTable = htmlElement.querySelector(".book_info");
     let tableDetails;
     if (bookDetailsTable) { 
       tableDetails = bookDetailsTable.querySelector("table");
@@ -142,5 +123,13 @@ export function editHTML(document, options) {
       tableDetails.deleteRow(-1);
     }
   }
+
+  const createBootstrapLink = () => {
+    const bootstrapLink = document.createElement('link');
+    bootstrapLink.rel = 'stylesheet';
+    bootstrapLink.href = BOOTSTRAP_HREF;
+    return bootstrapLink;
+  }
+
 
 export default editHTML;
