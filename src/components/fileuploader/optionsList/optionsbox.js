@@ -1,11 +1,16 @@
 import React, {useState, useRef} from "react";
 import { NumericalInput, NumericalInputWSelect} from "./inputs/numericalInputs";
+import Checkbox from "./inputs/checkboxes";
+import RadioButtons from "./inputs/radioButtons";
+import { EDIT_VIDEOS_HTML_STATE } from "../config/optionsState";
 
+/*Generates an accordion that contains an editable set of options that define what 
+settings to apply when editing the html file*/
 const Optionsbox = ({optionsProps}) => {
     const {bodyFontSize, setBodyFontSize} = optionsProps;
     const {selectedFontType, setSelectedFontType} = optionsProps;
     const {increaseFixedSize, setIncreaseFixedSize} = optionsProps;
-    const {videoLinkOnly, setVideoLinkOnly} = optionsProps;
+    const {videoImgsState, setVideoImgsState} = optionsProps;
     const {noNbsp, setNoNbsp} = optionsProps;
 
     const [open, setOpen] = useState(false);
@@ -17,7 +22,7 @@ const Optionsbox = ({optionsProps}) => {
     const interiorHeight = (open) ? accordionPanel.current.nextElementSibling.scrollHeight : 0;
     const panelStyle = {maxHeight: interiorHeight, padding: "0 18px", backgroundColor: "white", overflow: "hidden", transition: "0.4s", zIndex:"20"}
     return (
-        <div className="bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer pb-2 pt-3 px-3 border border-gray-400 rounded my-4 xl:w-1/2 md:5/6 w-11/12 sm:text-base text-xs mx-auto"
+        <div className="bg-gray-100 text-center hover:bg-gray-200 text-gray-700 cursor-pointer pb-2 pt-3 px-3 border border-gray-400 rounded my-4 xl:w-1/2 md:5/6 w-11/12 sm:text-base text-xs mx-auto"
             ref={accordionPanel}
             onClick={() => {handleToggleAccordion();}}>
                 <span className="text-xl font-bold">Opcions</span>
@@ -34,20 +39,12 @@ const Optionsbox = ({optionsProps}) => {
                     </div>
                     <div className="flex mb-4 w-full justify-around">
                         <div className="flex mb-4 px-2">
-                                <label class="inline-flex items-center mt-3">
-                                    <input className="form-checkbox h-5 w-5 text-indigo-600 cursor-pointer transition-all delay-150"
-                                    type="checkbox" checked={videoLinkOnly} id="videoLink" 
-                                    onChange={() => {setVideoLinkOnly(!videoLinkOnly)}} />
-                                    <span class="ml-2 text-gray-700">Canvia imatge dels vídeos pel seu enllaç</span>
-                                </label>
+                            <RadioButtons text={EDIT_VIDEOS_HTML_STATE} 
+                            setterFunction={setVideoImgsState} startingOptionPos={videoImgsState} />
                         </div>
                         <div className="flex mb-4 px-2">
-                                <label class="inline-flex items-center mt-3">
-                                    <input className="form-checkbox h-5 w-5 text-indigo-600 cursor-pointer transition-all delay-150"
-                                    type="checkbox" checked={noNbsp} id="noNbsp" 
-                                    onChange={() => {setNoNbsp(!noNbsp)}} />
-                                    <span class="ml-2 text-gray-700">Elimina espais en blanc extra</span>
-                                </label>
+                            <Checkbox text={"Elimina espais en blanc extra"} 
+                                checked={noNbsp} setChecked={setNoNbsp} />
                         </div>
                     </div>
                 </div>
@@ -56,7 +53,7 @@ const Optionsbox = ({optionsProps}) => {
 }
 
 /*Function to apply to a text after a new digit/letter/symbol has been added to that text.
-It removes all non-numbers* (it also leaves a single period if there are any)
+It removes all* non-numbers (*it also leaves a single period if there are any)
 from the text and returns it*/
 const getANumber = (text) => {
     let noLetters = text.replace(/[^0-9.]/g, "");

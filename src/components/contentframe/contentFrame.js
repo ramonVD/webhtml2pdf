@@ -1,11 +1,11 @@
 import React, {useEffect} from "react";
 
-/*LOADS THE CONTENT OF AN EXTERNAL HTML PAGE (this isnt very secure)
-AND PRINTS ITS CONTENTS AFTER LOADING IT.*/
+/*Hidden iframe that loads the contents of an html element generated from 
+the file that the user uploads, then prints its contents*/
 const ContentFrame = (props) => {
 
-const {iframeContent} = props || "";
-const {handleUploadChange} = props || function() {};
+const { iframeContent = "" } = props;
+const { handleUploadChange = function() {} } = props;
 const ifID = "ifContentLoader";
 
   useEffect(() => {
@@ -39,6 +39,7 @@ const ifID = "ifContentLoader";
     return () => {
       document.getElementById(ifID).removeEventListener('load', handleLoad);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
