@@ -1,16 +1,50 @@
 import { replaceVideosWithLink, createVideosThumbnail } from "./editHTML/editVideos";
-import setupTableElementsForPrint from "./editHTML/bootstrapEdits";
+import setupTableElementsForPrint from "./editHTML/editBootstrap";
+import { eliminateContentsTable, eliminateDetailsPage, createMainTitlePage, cleanIOCChapter } from "./editHTML/editDetailsPages";
+import { isIOCBook } from "./editHTML/aux/utils";
+
+/*
+MORE THINGS TO DO:
+
+-AS AN OPTION
+  -ELIMINATE FIRST TWO PAGES OF THE DOCUMENT (book definition/campus stuff + unusable anchors) - DONE
+    --NEED TO HOOK THESE TO OPTIONS. ALSO AN OPTION TO CLEAN THE BOOK
+    -- OR: FIGURE A WAY TO MAKE THE ANCHORS TO CHAPTERS WORK (TRIED A LOT OF STUFF, NO LUCK SO FAR)
+
+-CONSIDER IF OPTION OR DO IT ALWAYS:
+  -ELIMINATE LINKS FROM ACCORDION BUTTONS AND SIMILAR
+
+-GOTTA DO IT:
+  -PELS ELEMENTS DE PESTANYES, POSA EL TITOL DE CADA PESTANYA SOBRE EL SEU CONTINGUT, EN COMPTES DE 
+  QUE NOMÉS ESTIGUI A SOBRE DEL PRIMER ELEMENT.
+
+
+
+
+  /* TO-DO: HOOK THIS TO OPTIONS
+  //Security check, only activate this if we're dealing with a IOC standard book...
+  if (isIOCBook(htmlElement)) {
+    const eliminatedTitle = eliminateDetailsPage(htmlElement);
+
+    eliminateContentsTable(htmlElement);
+
+    createMainTitlePage(htmlElement, eliminatedTitle);
+  } else {
+    cleanIOCChapter(htmlElement);
+  }*/
+
+
 
 /*
 Changes to apply to an html document before the choice to print it as a pdf
-document is displayed. Need to make modular as it grows
+document is displayed. Need to make modular as it grows.
 */
 /*const BOOTSTRAP_HREF = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";*/
 
 export async function editHTML(htmlElement, options) {
     /*Inserta la llibreria de bootstrap al document, ja que per defecte l'eliminem abans al sanititzar l'html.
     Posar-ho com una opció potser millor?*/
- 
+    //console.log(htmlElement.innerHTML);
     /*Per defecte aplica padding i margin i assigna un color a la vora inferior 
       de cada tab-pane (excepte l'últim) dins un element amb "pestanyes". Canviar aquí.*/
     const openedTabsCSS = {
@@ -30,7 +64,6 @@ export async function editHTML(htmlElement, options) {
     https://stackoverflow.com/questions/34534231/page-break-insideavoid-not-working
     because or DOM tree has flex styled grandparents, which are needed... Added the media
     query in the CSS but that's not reliable.*/
-
     //Increase body font size
     htmlElement.getElementsByTagName("body")[0].style.fontSize = MIDA_FONT;
 
@@ -38,13 +71,14 @@ export async function editHTML(htmlElement, options) {
 
     setupTableElementsForPrint(htmlElement);
 
+
     //Increase font size of elements with a defined font-size in px too.
     increaseElementsFontSize(FindByStyleAttr(htmlElement, "fontSize"), AUGMENTAR_MIDA_FONT_PX);
 
-    if (options.videoLinkOnly) {
+    if (options.videoImgsState === 0) {
       replaceVideosWithLink(htmlElement);
     } else {
-      await createVideosThumbnail(htmlElement);
+      await createVideosThumbnail(htmlElement, options.videoImgsState > 1);
     }
      
     if (options.noNbsp) {
