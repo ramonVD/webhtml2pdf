@@ -81,7 +81,7 @@ const FileUploader = () => {
 
   const [loaderState, setLoaderState] = useState(FILE_UPLOADER_STATE.INIT);
 
-  const processDrop = HTMLString => {
+  const processDrop = async HTMLString => {
     setLoaderState(FILE_UPLOADER_STATE.PROCESSING);
     /*Validate that its a real html file*/
     const nonEmptyHTML = NonEmptyHTMLString(HTMLString);
@@ -89,7 +89,7 @@ const FileUploader = () => {
     /*Stringify it, use it to create an html element*/
     const cleanHtmlElement = createCleanHTMLElement(nonEmptyHTML);
     /*Apply changes to the html element*/
-    return editHTML(cleanHtmlElement, currentOptions);
+    return await editHTML(cleanHtmlElement, currentOptions);
     /* As of now, we send the edited html to an iframe and
     print it in the browser window. Before, we used a library
     to convert html to pdf but they have proven to be spotty.*/

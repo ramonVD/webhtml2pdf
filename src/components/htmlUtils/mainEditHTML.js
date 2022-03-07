@@ -7,8 +7,7 @@ document is displayed. Need to make modular as it grows
 */
 /*const BOOTSTRAP_HREF = "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css";*/
 
-export function editHTML(htmlElement, options) {
-
+export async function editHTML(htmlElement, options) {
     /*Inserta la llibreria de bootstrap al document, ja que per defecte l'eliminem abans al sanititzar l'html.
     Posar-ho com una opció potser millor?*/
  
@@ -45,7 +44,7 @@ export function editHTML(htmlElement, options) {
     if (options.videoLinkOnly) {
       replaceVideosWithLink(htmlElement);
     } else {
-      createVideosThumbnail(htmlElement);
+      await createVideosThumbnail(htmlElement);
     }
      
     if (options.noNbsp) {

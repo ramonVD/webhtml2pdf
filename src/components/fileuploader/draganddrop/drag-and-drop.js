@@ -56,9 +56,10 @@ const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
     setData("");
     const reader = new FileReader();
     reader.readAsText(files[0]);
-    reader.onload = loadEvt => {
-      setData(processDrop(loadEvt.target.result).innerHTML);
-    };
+    reader.onload = async loadEvt => {
+      const finalHTML = await processDrop(loadEvt.target.result);
+      setData(finalHTML.innerHTML);
+    }
   };
 
   const dragOverlayClass = dragOverlay ? "border-red-800 bg-grey-500" : "";
