@@ -1,3 +1,5 @@
+/*Utils to validate the file format, size and amount that
+will be uploaded by the user. Also adapted (check fileuploader).*/
 export const fileValidator = (files, config) => {
     const { allowedFileFormats, fileSizeMBLimit, filesLimit } = config;
     const { length } = files;
