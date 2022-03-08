@@ -23,6 +23,9 @@ const FileUploader = () => {
   const [selectedFontType, setSelectedFontType] = useState(defaultHTMLEditOptions.MIDA_FONT_UNITS);
   const [increaseFixedSize, setIncreaseFixedSize] = useState(defaultHTMLEditOptions.AUGMENTAR_MIDA_FONT_PX);
   const [videoImgsState, setVideoImgsState] = useState(0);
+  const [removeDetails, setRemoveDetails] = useState(false);
+  const [removeIndex, setRemoveIndex] = useState(false);
+  const [addTitlePage, setAddTitlePage] = useState(false);
   const [noNbsp, setNoNbsp] = useState(defaultHTMLEditOptions.NO_NBSP);
 
   const currentOptions = {
@@ -30,6 +33,9 @@ const FileUploader = () => {
     selectedFontType: selectedFontType,
     increaseFixedSize:increaseFixedSize, 
     videoImgsState: videoImgsState,
+    removeDetails: removeDetails,
+    removeIndex: removeIndex,
+    addTitlePage: addTitlePage,
     noNbsp:noNbsp
   }
 
@@ -38,6 +44,9 @@ const FileUploader = () => {
     setSelectedFontType: setSelectedFontType,
     setIncreaseFixedSize: setIncreaseFixedSize,
     setVideoImgsState: setVideoImgsState,
+    setRemoveDetails: setRemoveDetails,
+    setRemoveIndex: setRemoveIndex,
+    setAddTitlePage: setAddTitlePage,
     setNoNbsp: setNoNbsp
   }
 

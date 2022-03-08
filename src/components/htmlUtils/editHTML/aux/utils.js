@@ -49,9 +49,3 @@ export function removeIfExists(htmlElement) {
     htmlElement.remove();
   }
 }
-
-/*Checks if there's a concrete class that should only appear on IOC
-books*/
-export function isIOCBook(htmlElement) {
-  return htmlElement.querySelector(".book_info") !== null;
-}
