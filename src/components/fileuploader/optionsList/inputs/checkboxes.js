@@ -3,9 +3,7 @@
 
 /*Standard checkbox to toggle a value true or false (not necessarily since
     the function to set the value is also passed but that's the normal use)*/
-const Checkbox = ({text, checked, setChecked, options}) => {
-    if (options === undefined) { options = {};}
-
+const Checkbox = ({ text, checked, setChecked, options={} }) => {
     const defaultToggleClasses = "form-checkbox h-5 w-5 text-blue-600 cursor-pointer";
     const defaultToggleTextClasses = "ml-2 text-gray-700";
 

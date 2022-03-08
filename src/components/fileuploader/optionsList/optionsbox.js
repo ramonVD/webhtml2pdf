@@ -1,6 +1,8 @@
 import React, {useState, useRef} from "react";
 import { NumericalInput, NumericalInputWSelect} from "./inputs/numericalInputs";
 import Checkbox from "./inputs/checkboxes";
+import RadioButtons from "./inputs/radioButtons";
+import { EDIT_VIDEOS_HTML_STATE } from "../config/optionsState";
 
 /*Generates an accordion that contains an editable set of options that define what 
 settings to apply when editing the html file*/
@@ -8,7 +10,7 @@ const Optionsbox = ({optionsProps}) => {
     const {bodyFontSize, setBodyFontSize} = optionsProps;
     const {selectedFontType, setSelectedFontType} = optionsProps;
     const {increaseFixedSize, setIncreaseFixedSize} = optionsProps;
-    const {videoLinkOnly, setVideoLinkOnly} = optionsProps;
+    const {videoImgsState, setVideoImgsState} = optionsProps;
     const {noNbsp, setNoNbsp} = optionsProps;
 
     const [open, setOpen] = useState(false);
@@ -37,8 +39,8 @@ const Optionsbox = ({optionsProps}) => {
                     </div>
                     <div className="flex mb-4 w-full justify-around">
                         <div className="flex mb-4 px-2">
-                            <Checkbox text={"Canvia imatge dels vídeos pel seu enllaç"} 
-                                checked={videoLinkOnly} setChecked={setVideoLinkOnly} />
+                            <RadioButtons text={EDIT_VIDEOS_HTML_STATE} 
+                            setterFunction={setVideoImgsState} startingOptionPos={videoImgsState} />
                         </div>
                         <div className="flex mb-4 px-2">
                             <Checkbox text={"Elimina espais en blanc extra"} 

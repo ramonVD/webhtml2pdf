@@ -5,7 +5,6 @@ despite the default styles applied.*/
 const fixTableBackground = (table) => {
     const tableChildren = Array.from(table.querySelectorAll("tr, td, th"));
     tableChildren.forEach( tableChild => {
-        //THIS WILL NOT APPLY TO TRs, need TO MAKE THE SOLUTION FROM BTS CLASSES TO THIS TOO FOR TRs
         if (tableChild.style.backgroundColor !== "") {
             propagateBgColorToCells(tableChild, tableChild.style.backgroundColor);
         } else {

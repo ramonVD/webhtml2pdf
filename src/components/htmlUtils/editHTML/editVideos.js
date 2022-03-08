@@ -1,5 +1,11 @@
 /*Functions to edit videos html, changing their formats, adding thumbnails...*/
-import fetch from 'cross-fetch';
+import { isYoutubeVideo, getYoutubeThumbnailSrc } from "./aux/youtube";
+import { isVimeoVideo, getVimeoThumbnailSrc } from './aux/vimeo';
+import { getVideoSrc } from './aux/utils';
+/* So far, only need to fetch API info when encountering Vimeo videos.
+TO-DO: 
+- Need to implement Promise.all to call for all videos info simultaneously
+- LINK TO THE VIDEO AFTER THE THUMBNAIL IS AN OPTION, NOT DONE ALWAYS*/
 
 /*Function to replace videos and iframes with videos to a text with a link
 to the video*/
@@ -36,120 +42,86 @@ export function replaceVideosWithLink(htmlElement) {
   }
 
 
-/*Function to swap all videos in the page for their thumbnails...*/
-export async function createVideosThumbnail(htmlElement) {
-    const videos = findVideos(htmlElement);
-    const videoArray = Array.from(videos);
-    for (let video of videoArray) {
-      const src = getVideoSrc(video)[0];
-      if (src === undefined || src === "") { return; }
-      if (isYoutubeVideo(src)) {
-          //https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
-          const ytRegExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-          const match = src.match(ytRegExp);
-          //64 bits is enough for each human on earth to upload 2 billion videos, so length 11 shouldnt change?
-          if (match && match[2].length === 11) {
-              const thumbnailImgSrc = `https://img.youtube.com/vi/${match[2]}/mqdefault.jpg`;
-              const videoDim = getVideoDims(video);
-              //making the iframe invisible, inserting thumbnail img on top of it
-              const img = createImgWSrcText(thumbnailImgSrc, videoDim, src);
-              video.style.display = "none";
-              video.parentNode.insertBefore(img, video);
-          } else {
-          //error, invalid youtube link, just change nothing and let the empty thumbnail probabaly?
-          }
+/*Function to swap all videos in the page for their thumbnails + the video link under it...*/
+export async function createVideosThumbnail(htmlElement, imgAndLink) {
+  const videos = findVideos(htmlElement);
+  const videoArray = Array.from(videos);
+  const possibleVimeos = [];
+  const vimeoPromises = [];
+  for (let video of videoArray) {
+    const src = getVideoSrc(video)[0];
+    if (src === undefined || src === "") { return; }
+    if (isYoutubeVideo(src)) {
+      const thumbnailImgSrc = getYoutubeThumbnailSrc(src);
+      if (thumbnailImgSrc !== "") {
+        insertThumbnailForVideo(video, thumbnailImgSrc, src, imgAndLink);
       }
-      else if (isVimeoVideo(src)) {
-        const videoIDMatch = getVimeoVideoID(src);
-        if (isAnArray(videoIDMatch) && videoIDMatch.length > 0) {
-          const videoID = videoIDMatch[1];
-          /*Call Vimeo's API to get the thumbnail img... blocking... change this
-          To call all elements in parallel? Gotta check how (Promise.all) */
-          const thumbnailImgSrc = await getVimeoThumbnailSrc(videoID);
-          if (thumbnailImgSrc !== "") {
-            const videoDim = getVideoDims(video);
-            const img = createImgWSrcText(thumbnailImgSrc, videoDim, src);
-            video.style.display = "none";
-            video.parentNode.insertBefore(img, video);
-          }
-        } else {
-          //Not a supported vimeo video (yet?)
-        }
-        
-      }
-      
-      // Add here extra code for non youtube platforms like vimeo
-
-      else {
-          //Non supported video platform... do nothing too?
-      }
-  }
-}
-
-
-function isIframe(element) {
-  return element.tagName.toLowerCase() === "iframe";
-}
-
-function isVideo(element) {
-  return element.tagName.toLowerCase() === "video";
-}
-
-//To avoid function name collision?
-const isAnArray = (element) => element.constructor === Array
-
-/*Return all src strings for an array of videos, or a single src
-string if its a single element.*/
-function getVideoSrc(videoElements) {
-  if (!isAnArray(videoElements)) {
-    videoElements = [videoElements];
-  }
-  const videoSrcs = videoElements.map( function(el) {
-    if (isIframe(el)) {
-      return el.src;
-    } else if (isVideo(el)) {
-        return getLazyVideoSrc(el);
     }
-    return "";
-  });
-  return videoSrcs;
-}
-
-//Gets the src of the video if the element is a video-js construct
-function getLazyVideoSrc(videoElement) {
-  const videoAttrStr = videoElement.getAttribute("data-setup-lazy");
-  if (videoAttrStr !== undefined) {
-    const videoAttr = JSON.parse(videoAttrStr);
-    if (videoAttr.hasOwnProperty("sources") && videoAttr["sources"].length > 0 
-      && videoAttr["sources"][0].hasOwnProperty("src")) { 
-      return videoAttr["sources"][0]["src"];
+    else if (isVimeoVideo(src)) {
+      /*Call Vimeo's API to get the thumbnail imgs*/
+      possibleVimeos.push({video: video, src: src});
+      vimeoPromises.push(Promise.resolve(getVimeoThumbnailSrc(src)));
+    } else {
+      //Not a supported video type (yet?) (dailymotion...?)
     }
   }
-  return "";
+  //Try fetching all vimeo API thumbnail srcs in parallel
+  try {
+    const foundSrcs = await Promise.allSettled(vimeoPromises);
+    foundSrcs.map( (thumbnailImgSrc, index) => {
+      if (thumbnailImgSrc !== "") {
+        insertThumbnailForVideo(possibleVimeos[index].video, thumbnailImgSrc, 
+          possibleVimeos[index].src, imgAndLink);
+      }
+      return "";
+    });
+    /*No need to return anything, insertThumbnailForVideo modifies document DOM*/
+  } catch (err) { 
+    console.log(err);
+  }
 }
 
-const createImgWSrcText = (imgSrc, dimensions, videoSrc, alt) => {
+/*Inserts the thumbnail image in the dom before the video element,
+makes the video element invisible.*/
+const insertThumbnailForVideo = (video, thumbnailImgSrc, videoSrc, imgAndLink) => {
+  const videoDim = getVideoDims(video);
+  //making the iframe invisible, inserting thumbnail img on top of it
+  const img = createImgWSrcText(thumbnailImgSrc, videoDim, videoSrc, imgAndLink);
+  video.style.display = "none";
+  video.parentNode.insertBefore(img, video);
+}
+
+/*Creates a div containing an image from a src with the desired dimentions,
+and under it a link to a video. */
+const createImgWSrcText = (imgSrc, dimensions, videoSrc, imgAndLink, alt) => {
   const image = createImg(imgSrc, dimensions, alt);
-  const wrapperDiv = document.createElement("div");
-  const link = document.createElement("a");
-  link.href = videoSrc;
-  link.style.display = "block";
-  link.innerHTML = `<small>${videoSrc}</small>`;
-  wrapperDiv.style.display="flex";
-  wrapperDiv.style.flexDirection = "column";
-  wrapperDiv.style.alignItems ="center";
-  wrapperDiv.style.flexWrap = "nowrap";
-  wrapperDiv.append(image);
-  wrapperDiv.append(link);
-  return wrapperDiv;
+  if (imgAndLink) {
+    const wrapperDiv = document.createElement("div");
+    //Set the default video div css, using campus default styles (.mediaplugin)
+    wrapperDiv.style.width = "100vw";
+    wrapperDiv.style.maxWidth = "100%";
+    wrapperDiv.style.display = "block";
+    wrapperDiv.style.marginTop = "5px";
+    wrapperDiv.style.marginBottom = "5px";
+    wrapperDiv.style.textAlign = "center";
+    wrapperDiv.append(image);
+    const link = document.createElement("a");
+    link.href = videoSrc;
+    wrapperDiv.append(link);
+    link.style.display = "block";
+    link.innerHTML = `<small>${videoSrc}</small>`;
+    return wrapperDiv;
+  }
+  return image;
 }
+
 //Creates an image element with defined src and dimensions
 const createImg = (src, dimensions, alt) => {
     const img = document.createElement('img');
     img.src = src;
     img.alt = alt || "Text alternatiu";
-    img.style.width = dimensions[0];
-    img.style.height = dimensions[1];
+    img.style.width = dimensions[0] + "px";
+    img.style.height = dimensions[1] + "px";
     return img;
 }
 
@@ -162,48 +134,3 @@ const getVideoDims = (videoElement) => {
   return videoDim;
 }
 
-//Youtube
-function isYoutubeVideo(videoSrc) {
-  //Better regex: https://stackoverflow.com/questions/19377262/regex-for-youtube-url
-  return videoSrc.match(/^(https?:\/\/)?(www\.youtube\.com|youtu\.be)\/.+$/);
-}
-
-//Vimeo
-const getVimeoVideoID = (videoSrc) => 
-videoSrc.match(/^https\:\/\/player\.vimeo\.com\/video\/(\d{8})$/);
-
-/*Probably change this regex, need to check more possible structures. 
-Apparently vimeo changes this a lot, so uhhh Iunno*/
-function isVimeoVideo(videoSrc) {
-  return videoSrc.match(/^https\:\/\/player\.vimeo\.com\/video\/(\d{8})$/);
-}
-
-//Gotta use vimeo's API
-async function getVimeoThumbnailSrc(vimeoID) {
-  //https://stackoverflow.com/questions/1361149/get-img-thumbnails-from-vimeo
-  const vimeoJSON = await fetch(`http://vimeo.com/api/v2/video/${vimeoID}.json`)
-  .then(res => {
-    if (res.status >= 400) {
-      console.log("Error - cannot access vimeo API.");
-      return "";
-    }
-    return res.json();
-  })
-  .then(data => {
-    if (data === "" || data.length < 1) { return "";}
-    const videoData = data[0];
-    if (videoData.hasOwnProperty("thumbnail_large")) {
-      return videoData.thumbnail_large;
-    } else if (videoData.hasOwnProperty("thumbnail_medium")) {
-      return videoData.thumbnail_medium;
-    } else {
-      return "";
-    }
-  })
-  .catch(err => {
-    console.log("Error fetching vimeo thumbnail:");
-    console.log(err);
-    return "";
-  });
-  return vimeoJSON;
-}
