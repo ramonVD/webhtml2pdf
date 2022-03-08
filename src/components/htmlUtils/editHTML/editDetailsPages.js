@@ -61,7 +61,7 @@ function createMainTitlePage(htmlElement, text) {
   newTitle.style.textAlign = "center";
   newTitle.style.verticalAlign = "middle";
   newTitle.style.marginTop = "650px";
-  newTitle.style.marginLeft = "-80px";
+  newTitle.style.marginLeft = "-10px";
   newTitle.style.fontSize = "40px";
   newTitle.style.alignSelf = "center";
   newTitle.innerText = text;
