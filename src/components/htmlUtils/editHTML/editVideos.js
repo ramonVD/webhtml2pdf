@@ -68,12 +68,11 @@ export async function createVideosThumbnail(htmlElement, imgAndLink) {
   //Try fetching all vimeo API thumbnail srcs in parallel
   try {
     const foundSrcs = await Promise.allSettled(vimeoPromises);
-    foundSrcs.map( (thumbnailImgSrc, index) => {
-      if (thumbnailImgSrc !== "") {
-        insertThumbnailForVideo(possibleVimeos[index].video, thumbnailImgSrc, 
-          possibleVimeos[index].src, imgAndLink);
+    foundSrcs.forEach( (thumbnailImgSrc, index) => {
+      if (thumbnailImgSrc.value !== "") {
+        insertThumbnailForVideo(possibleVimeos[index].video,
+          thumbnailImgSrc.value, possibleVimeos[index].src, imgAndLink);
       }
-      return "";
     });
     /*No need to return anything, insertThumbnailForVideo modifies document DOM*/
   } catch (err) { 

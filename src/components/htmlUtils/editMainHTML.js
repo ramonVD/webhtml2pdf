@@ -1,7 +1,6 @@
 import { replaceVideosWithLink, createVideosThumbnail } from "./editHTML/editVideos";
 import setupTableElementsForPrint from "./editHTML/editBootstrap";
-import { eliminateContentsTable, eliminateDetailsPage, createMainTitlePage, cleanIOCChapter } from "./editHTML/editDetailsPages";
-import { isIOCBook } from "./editHTML/aux/utils";
+import cleanIOCBookOrChapter from "./editHTML/editDetailsPages";
 
 /*
 MORE THINGS TO DO:
@@ -44,7 +43,7 @@ document is displayed. Need to make modular as it grows.
 export async function editHTML(htmlElement, options) {
     /*Inserta la llibreria de bootstrap al document, ja que per defecte l'eliminem abans al sanititzar l'html.
     Posar-ho com una opció potser millor?*/
-    //console.log(htmlElement.innerHTML);
+
     /*Per defecte aplica padding i margin i assigna un color a la vora inferior 
       de cada tab-pane (excepte l'últim) dins un element amb "pestanyes". Canviar aquí.*/
     const openedTabsCSS = {
@@ -71,7 +70,6 @@ export async function editHTML(htmlElement, options) {
 
     setupTableElementsForPrint(htmlElement);
 
-
     //Increase font size of elements with a defined font-size in px too.
     increaseElementsFontSize(FindByStyleAttr(htmlElement, "fontSize"), AUGMENTAR_MIDA_FONT_PX);
 
@@ -85,7 +83,7 @@ export async function editHTML(htmlElement, options) {
       removeNBSP(htmlElement);
     }
 
-    eliminateBookExtraDetails(htmlElement);
+    cleanIOCBookOrChapter(htmlElement, options);
 
     return htmlElement;
   }
@@ -141,21 +139,6 @@ export async function editHTML(htmlElement, options) {
     ps.forEach( function(el) {
         el.innerHTML = el.innerHTML.replace(/&nbsp;/g, " ");
       });
-  }
-
-  function eliminateBookExtraDetails(htmlElement) {
-    const bookDetailsTable = htmlElement.querySelector(".book_info");
-    let tableDetails;
-    if (bookDetailsTable) { 
-      tableDetails = bookDetailsTable.querySelector("table");
-      bookDetailsTable.classList.add("mb-4");
-      }
-    if (tableDetails) {
-      // Elimina les dues ultimes files de la taula amb detalls del llibre
-      // Els apartats Imprès per i data
-      tableDetails.deleteRow(-1);
-      tableDetails.deleteRow(-1);
-    }
   }
 
   /*const createBootstrapLink = () => {

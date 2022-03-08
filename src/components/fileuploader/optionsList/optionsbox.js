@@ -11,6 +11,9 @@ const Optionsbox = ({optionsProps}) => {
     const {selectedFontType, setSelectedFontType} = optionsProps;
     const {increaseFixedSize, setIncreaseFixedSize} = optionsProps;
     const {videoImgsState, setVideoImgsState} = optionsProps;
+    const {removeDetails, setRemoveDetails} = optionsProps;
+    const {removeIndex, setRemoveIndex} = optionsProps;
+    const {addTitlePage, setAddTitlePage} = optionsProps;
     const {noNbsp, setNoNbsp} = optionsProps;
 
     const [open, setOpen] = useState(false);
@@ -42,9 +45,24 @@ const Optionsbox = ({optionsProps}) => {
                             <RadioButtons text={EDIT_VIDEOS_HTML_STATE} 
                             setterFunction={setVideoImgsState} startingOptionPos={videoImgsState} />
                         </div>
-                        <div className="flex mb-4 px-2">
-                            <Checkbox text={"Elimina espais en blanc extra"} 
-                                checked={noNbsp} setChecked={setNoNbsp} />
+                        <div className="flex flex-col">
+                            <div className="flex mb-2 px-2">
+                                <Checkbox text={"Elimina espais en blanc extra"} 
+                                    checked={noNbsp} setChecked={setNoNbsp} />
+                            </div>
+                            <div className="flex mb-2 px-2">
+                                <Checkbox text={"Elimina pàgina de detalls (llibre IOC)"} 
+                                    checked={removeDetails} setChecked={setRemoveDetails} />
+                            </div>
+                            <div className="flex mb-2 px-2">
+                                <Checkbox text={"Elimina pàgina d'index (llibre IOC)"} 
+                                    checked={removeIndex} setChecked={setRemoveIndex} />
+                            </div>
+                            <div className="flex mb-2 px-2">
+                                <Checkbox text={"Afegeix pàgina títol (llibre IOC)"} 
+                                    checked={addTitlePage && removeIndex && removeDetails} setChecked={setAddTitlePage} 
+                                    options={{disabled: !removeDetails || !removeIndex}} />
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -15,7 +15,7 @@ export const RadioButtons = ({ text, startingOptionPos=0, setterFunction, option
 const createDefaultRadioJSX = (text, pos, amIChecked, setterFunction, options={}) => {
     //Set classes via options here (WIP)
     const inputDefaultClass = "form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-orange-600 checked:border-orange-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";
-    const labelDefaultClass = "form-check-label inline-block text-gray-800 cursor-pointer";
+    const labelDefaultClass = "form-check-label inline-block text-gray-800 cursor-pointer mb-2";
     return(
         <div key={`flexRadio${text}${pos}`} className="align-start">
             <input className={inputDefaultClass}
