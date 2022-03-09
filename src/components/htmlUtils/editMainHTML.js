@@ -53,18 +53,27 @@ export async function editHTML(htmlElement, options) {
     }
     //Canviar la nova mida de la font a conveniencia
     //Pot arribar la opcio buida, en teoria mai negativa però per si de cas...
-    if (options.bodyFontSize === "" || options.bodyFontSize < 0) { options.bodyFontSize = 0;} //potser 1?
-    const MIDA_FONT = options.bodyFontSize + options.selectedFontType;
+    if (options.bodyFontSize === "" || options.bodyFontSize < 0) { options.bodyFontSize = 1;}
+    const MIDA_FONT_BASE = options.bodyFontSize + options.selectedFontType;
+
     //Augmenta la mida de lletra amb mida fixa, p.ex 16px -> 20px
     if (options.increaseFixedSize === "" || options.increaseFixedSize < 0) { options.increaseFixedSize = 0;}
-    const AUGMENTAR_MIDA_FONT_PX = options.increaseFixedSize;
+
+
+    //TO-DO: QUE AQUESTA MIDA DE FONT AFECTI ALS TÏTOLS H5, I H4????
+    const AUGMENTAR_MIDA_FONT_PX = parseInt(options.increaseFixedSize);
 
     /*Fixing image breaking between two pages when printing is not possible according to
     https://stackoverflow.com/questions/34534231/page-break-insideavoid-not-working
     because or DOM tree has flex styled grandparents, which are needed... Added the media
     query in the CSS but that's not reliable.*/
-    //Increase body font size
-    htmlElement.getElementsByTagName("body")[0].style.fontSize = MIDA_FONT;
+    /*Increase body font size and remove the left margin that the campus sets by default.
+    Maybe make the second one optional too but it just loses page space for no reason*/
+    //Passar aixo a un modul independent
+    const body = htmlElement.getElementsByTagName("body")[0];
+    body.style.fontSize = MIDA_FONT_BASE;
+    body.style.setProperty("margin-left", "15px" , "important");
+    htmlElement.querySelectorAll("h2, h4, h5").forEach( miniHeader => { miniHeader.style.setProperty("font-size", MIDA_FONT_BASE , "important"); });
 
     openAllCollapsablesAndTabs(htmlElement, openedTabsCSS);
 
@@ -124,10 +133,10 @@ export async function editHTML(htmlElement, options) {
   function increaseElementsFontSize(elements, amount) {
     elements.forEach(function(element) {
       const OGFontSize = element.style.fontSize;
-      if (OGFontSize.includes("px")) {
-        const OGNumber = OGFontSize.replace(/\D/g, "");
-        const newNumber = parseInt(parseInt(OGNumber) + amount) + "px";
-        element.style.fontSize = newNumber;
+      if (/pt|px/.test(OGFontSize)) {
+        const OGNumber = parseInt(OGFontSize.replace(/\D+/g, ""));
+        const newNumber = parseInt(OGNumber + amount);
+        element.style.fontSize = newNumber + "px";
       }
     });
   }

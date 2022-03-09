@@ -26,6 +26,7 @@ const FileUploader = () => {
   const [removeDetails, setRemoveDetails] = useState(false);
   const [removeIndex, setRemoveIndex] = useState(false);
   const [addTitlePage, setAddTitlePage] = useState(false);
+  const [classSizeArray, setClassSizeArray] = useState([]);
   const [noNbsp, setNoNbsp] = useState(defaultHTMLEditOptions.NO_NBSP);
 
   const currentOptions = {
@@ -36,6 +37,7 @@ const FileUploader = () => {
     removeDetails: removeDetails,
     removeIndex: removeIndex,
     addTitlePage: addTitlePage,
+    classSizeArray: classSizeArray,
     noNbsp:noNbsp
   }
 
@@ -47,6 +49,7 @@ const FileUploader = () => {
     setRemoveDetails: setRemoveDetails,
     setRemoveIndex: setRemoveIndex,
     setAddTitlePage: setAddTitlePage,
+    setClassSizeArray: setClassSizeArray,
     setNoNbsp: setNoNbsp
   }
 
