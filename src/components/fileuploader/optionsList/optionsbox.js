@@ -15,7 +15,7 @@ const Optionsbox = ({optionsProps}) => {
     const {removeDetails, setRemoveDetails} = optionsProps;
     const {removeIndex, setRemoveIndex} = optionsProps;
     const {addTitlePage, setAddTitlePage} = optionsProps;
-    const {classSizeArray, setClassSizeArray} = optionsProps;
+    const {elementSizeArray, setElementSizeArray} = optionsProps;
     const {noNbsp, setNoNbsp} = optionsProps;
 
     const [open, setOpen] = useState(false);
@@ -25,7 +25,8 @@ const Optionsbox = ({optionsProps}) => {
     const selectOptions = [<option value="em" key="em">em</option>, <option key="px" value="px">px</option>]
 
     const interiorHeight = (open) ? accordionPanel.current.nextElementSibling.scrollHeight : 0;
-    const panelStyle = {maxHeight: interiorHeight, padding: "0 18px", backgroundColor: "white", overflowX: "hidden", transition: "0.4s", zIndex:"20"}
+    const panelStyle = {maxHeight: interiorHeight, padding: "0 18px", 
+    backgroundColor: "white", overflowX: "hidden", transition: "0.4s", zIndex:"20"}
     return (
         <div className={`bg-gray-100 text-center hover:bg-gray-200 text-gray-700 cursor-pointer pb-2 
         pt-3 px-3 border border-gray-400 rounded my-4 xl:w-1/2 md:5/6 w-11/12 sm:text-base text-xs mx-auto`}
@@ -68,7 +69,7 @@ const Optionsbox = ({optionsProps}) => {
                             </div>
                         </div>
                     </div>
-                    <KeyValueAssign valueArray={classSizeArray} setValueArray={setClassSizeArray} />
+                    <KeyValueAssign valueArray={elementSizeArray} setValueArray={setElementSizeArray} />
                 </div>
         </div>
     );

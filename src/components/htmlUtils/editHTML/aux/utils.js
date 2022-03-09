@@ -49,3 +49,15 @@ export function removeIfExists(htmlElement) {
     htmlElement.remove();
   }
 }
+
+
+export function FindByStyleAttr(htmlElement, attribute) {
+  var All = htmlElement.getElementsByTagName("*");
+  const foundElements = [];
+  for (var i = 0; i < All.length; i++) {
+    if (All[i].style[attribute] && All[i].style[attribute] !== "") {
+      foundElements.push(All[i]);
+    }
+  }
+  return foundElements;
+}
