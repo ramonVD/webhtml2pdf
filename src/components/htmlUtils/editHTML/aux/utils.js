@@ -6,6 +6,7 @@ function isIframe(element) {
 function isVideo(element) {
     return element.tagName.toLowerCase() === "video";
 }
+
   
 //To avoid function name collision?
 export const isAnArray = (element) => element.constructor === Array
@@ -50,8 +51,30 @@ export function removeIfExists(htmlElement) {
   }
 }
 
-/*Checks if there's a concrete class that should only appear on IOC
-books*/
-export function isIOCBook(htmlElement) {
-  return htmlElement.querySelector(".book_info") !== null;
+
+export function FindByStyleAttr(htmlElement, attribute) {
+  var All = htmlElement.getElementsByTagName("*");
+  const foundElements = [];
+  for (var i = 0; i < All.length; i++) {
+    if (All[i].style[attribute] && All[i].style[attribute] !== "") {
+      foundElements.push(All[i]);
+    }
+  }
+  return foundElements;
+}
+
+
+/*Prepend a backslash to a special regex character*/
+export function backslashSpecialRegexChars(char) {
+  // eslint-disable-next-line no-useless-escape
+  if (char.match(/[\.\+\*\?\^\$\(\)\[\]\{\}\|\\]/)) {
+      return "\\" + char;
+  }
+  return char;
+}
+
+//Check if its a valid number.
+// https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric
+export function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
 }

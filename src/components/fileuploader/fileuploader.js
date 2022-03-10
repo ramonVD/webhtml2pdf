@@ -18,18 +18,33 @@ and displayed for the user to be printed as a pdf.*/
 
 
 const FileUploader = () => {
-  /*Isnt there a better way... than send all these as props?*/
+  /*Isnt there a better way... than send all these as props?
+  Sometimes I miss getState();*/
+  /*Upper component state*/
   const [bodyFontSize, setBodyFontSize] = useState(defaultHTMLEditOptions.MIDA_FONT);
   const [selectedFontType, setSelectedFontType] = useState(defaultHTMLEditOptions.MIDA_FONT_UNITS);
   const [increaseFixedSize, setIncreaseFixedSize] = useState(defaultHTMLEditOptions.AUGMENTAR_MIDA_FONT_PX);
   const [videoImgsState, setVideoImgsState] = useState(0);
+  const [removeDetails, setRemoveDetails] = useState(false);
+  const [removeIndex, setRemoveIndex] = useState(false);
+  const [addTitlePage, setAddTitlePage] = useState(false);
+  /*Set a default initial state here to fix the problems that arise
+   if this element exists in the document (and we're using default values)*/
+  const [elementSizeArray, setElementSizeArray] = useState([{
+      htmlSelector: ".exemple", fontValue: "20",
+      marginTopValue: "", widthValue: ""
+  }]);
   const [noNbsp, setNoNbsp] = useState(defaultHTMLEditOptions.NO_NBSP);
 
-  const currentOptions = {
+  const optionsValues = {
     bodyFontSize: bodyFontSize, 
     selectedFontType: selectedFontType,
     increaseFixedSize:increaseFixedSize, 
     videoImgsState: videoImgsState,
+    removeDetails: removeDetails,
+    removeIndex: removeIndex,
+    addTitlePage: addTitlePage,
+    elementSizeArray: elementSizeArray,
     noNbsp:noNbsp
   }
 
@@ -38,6 +53,10 @@ const FileUploader = () => {
     setSelectedFontType: setSelectedFontType,
     setIncreaseFixedSize: setIncreaseFixedSize,
     setVideoImgsState: setVideoImgsState,
+    setRemoveDetails: setRemoveDetails,
+    setRemoveIndex: setRemoveIndex,
+    setAddTitlePage: setAddTitlePage,
+    setElementSizeArray: setElementSizeArray,
     setNoNbsp: setNoNbsp
   }
 
@@ -51,7 +70,7 @@ const FileUploader = () => {
     /*Stringify it, use it to create an html element*/
     const cleanHtmlElement = createCleanHTMLElement(nonEmptyHTML);
     /*Apply changes to the html element*/
-    return await editHTML(cleanHtmlElement, currentOptions);
+    return await editHTML(cleanHtmlElement, optionsValues);
     /* As of now, we send the edited html to an iframe and
     print it in the browser window. Before, we used a library
     to convert html to pdf but they have proven to be spotty.*/
@@ -59,7 +78,7 @@ const FileUploader = () => {
 
   return (
     <div>
-      <Optionsbox optionsProps={{...currentOptions, ...optionsSetters}} />
+      <Optionsbox optionsProps={{...optionsValues, ...optionsSetters}} />
       <div className="flex">
         <DragAndDrop processDrop={processDrop} config={UPLOADED_FILE_SETTINGS}
                       handleUploadChange={setLoaderState}>

@@ -1,6 +1,7 @@
 /*Functions to edit videos html, changing their formats, adding thumbnails...*/
 import { isYoutubeVideo, getYoutubeThumbnailSrc } from "./aux/youtube";
 import { isVimeoVideo, getVimeoThumbnailSrc } from './aux/vimeo';
+import isH5P from "./aux/H5P";
 import { getVideoSrc } from './aux/utils';
 /* So far, only need to fetch API info when encountering Vimeo videos.
 TO-DO: 
@@ -32,10 +33,13 @@ export function replaceVideosWithLink(htmlElement) {
     newDiv.classList.add("py-5");
     // style div
     const p = document.createElement("p");
-    p.innerHTML = "Vídeo:&nbsp;&nbsp;&nbsp;";
+    p.innerHTML = isH5P(src) ? "<strong>H5P:</strong>&nbsp;&nbsp;&nbsp;" :
+     "<strong>Vídeo:</strong>&nbsp;&nbsp;&nbsp;";
     const newLink = document.createElement('a');
     newLink.innerText = (src === "") ? "No trobat" : src;
     newLink.href = (src === "") ?  "#" : src;
+    //Dunno if needed because in the end, its a pdf doc...
+    newLink.rel = "noopener";
     p.appendChild(newLink);
     newDiv.appendChild(p);
     return newDiv;
@@ -61,6 +65,12 @@ export async function createVideosThumbnail(htmlElement, imgAndLink) {
       /*Call Vimeo's API to get the thumbnail imgs*/
       possibleVimeos.push({video: video, src: src});
       vimeoPromises.push(Promise.resolve(getVimeoThumbnailSrc(src)));
+    } else if (isH5P(src)){
+      /*Maybe insert the h5p iframe contents inside DOM instead (exploity,
+        but its a trusted element (if it had an exploit it wouldnt matter
+        here since the problem would've shown up before)...)*/
+      const h5pLink = createVideoReplacement(src);
+      video.parentNode.replaceChild(h5pLink, video)
     } else {
       //Not a supported video type (yet?) (dailymotion...?)
     }
@@ -68,12 +78,11 @@ export async function createVideosThumbnail(htmlElement, imgAndLink) {
   //Try fetching all vimeo API thumbnail srcs in parallel
   try {
     const foundSrcs = await Promise.allSettled(vimeoPromises);
-    foundSrcs.map( (thumbnailImgSrc, index) => {
-      if (thumbnailImgSrc !== "") {
-        insertThumbnailForVideo(possibleVimeos[index].video, thumbnailImgSrc, 
-          possibleVimeos[index].src, imgAndLink);
+    foundSrcs.forEach( (thumbnailImgSrc, index) => {
+      if (thumbnailImgSrc.value !== "") {
+        insertThumbnailForVideo(possibleVimeos[index].video,
+          thumbnailImgSrc.value, possibleVimeos[index].src, imgAndLink);
       }
-      return "";
     });
     /*No need to return anything, insertThumbnailForVideo modifies document DOM*/
   } catch (err) { 
