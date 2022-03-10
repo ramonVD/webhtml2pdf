@@ -2,8 +2,8 @@ import { replaceVideosWithLink, createVideosThumbnail } from "./editHTML/editVid
 import {setupTableElementsForPrint, 
   openAllCollapsablesAndTabs} from "./editHTML/editBootstrap";
 import cleanIOCBookOrChapter from "./editHTML/editDetailsPages";
-import { editBody, editHeaders,
-  applyChangesToUserSelectors} from "./editHTML/editCommonElements";
+import { editBody, editHeaders} from "./editHTML/editCommonElements";
+import applyChangesToUserSelectors from "./editHTML/applyUserChanges";
 import { FindByStyleAttr } from "./editHTML/aux/utils";
 /*
 MORE THINGS TO DO:

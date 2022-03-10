@@ -28,9 +28,12 @@ const FileUploader = () => {
   const [removeDetails, setRemoveDetails] = useState(false);
   const [removeIndex, setRemoveIndex] = useState(false);
   const [addTitlePage, setAddTitlePage] = useState(false);
-  const [elementSizeArray, setElementSizeArray] = useState([
-    {htmlSelector: ".exemple", fontValue: "20", marginTopValue: ""}
-  ]);
+  /*Set a default initial state here to fix the problems that arise
+   if this element exists in the document (and we're using default values)*/
+  const [elementSizeArray, setElementSizeArray] = useState([{
+      htmlSelector: ".exemple", fontValue: "20",
+      marginTopValue: "", widthValue: ""
+  }]);
   const [noNbsp, setNoNbsp] = useState(defaultHTMLEditOptions.NO_NBSP);
 
   const optionsValues = {

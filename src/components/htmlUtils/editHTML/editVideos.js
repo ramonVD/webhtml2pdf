@@ -38,6 +38,8 @@ export function replaceVideosWithLink(htmlElement) {
     const newLink = document.createElement('a');
     newLink.innerText = (src === "") ? "No trobat" : src;
     newLink.href = (src === "") ?  "#" : src;
+    //Dunno if needed because in the end, its a pdf doc...
+    newLink.rel = "noopener";
     p.appendChild(newLink);
     newDiv.appendChild(p);
     return newDiv;

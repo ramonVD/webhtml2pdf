@@ -3,6 +3,10 @@ import React from "react";
 /*React components that define numerical inputs (standard plus a numerical input with associated 
     select + options)*/
 
+/*NOTE: onChange doesnt seem to work on copy + pasting text to the input.
+I've tried fixing it using onPaste and onInput, both doesnt detect the change.
+Will see.*/
+
 /* Standard numerical input, two rows, one with text, the other 
 with the numerical input (by default)*/
 export const NumericalInput = ({ text, value, handleChange, options={} }) => {
@@ -17,7 +21,8 @@ export const NumericalInput = ({ text, value, handleChange, options={} }) => {
                  htmlFor={NIName}>
                 {text}
                 </label>
-                <input name={NIName} className={inputClasses} type="text" value={value} onChange={handleChange}/>
+                <input name={NIName} className={inputClasses} type="text" value={value}
+                 onChange={handleChange} />
         </div>
     );
 }
@@ -41,7 +46,8 @@ export const NumericalInputWSelect = ({ text, inputValue, selectValue, optionsJS
             <div className="flex mb-4 h-12">
                 <div className="w-3/4">
                     <input className={inputClasses} name={NIName}
-                    type="text" value={inputValue} onChange={handleInputChange}/>
+                    type="text" value={inputValue}
+                    onInput={handleInputChange} />
                     </div>
                     <div className="">
                         <div className="mb-3">

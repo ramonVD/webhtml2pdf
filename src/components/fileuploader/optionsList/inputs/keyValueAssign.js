@@ -2,14 +2,16 @@ import { getANumber } from "../optionsbox";
 
 /*Element with an array of dicts that assign to a certain key a specific value*/
 
-const KV_DEFAULT_DICT = {htmlSelector: "", fontValue: "", marginTopValue: ""};
-/*In this concrete case, need an element to assign to a specific classname
-in the DOM a value for its new font size. It creates a table that
-fills up with rows of the k-v values as inputs, plus a button
-to eliminate every pair.
+const KV_DEFAULT_DICT = {htmlSelector: "", fontValue: "", marginTopValue: "", widthValue: ""};
+/*In this concrete case, need an element to assign to a specific element
+in the DOM a value for one of its attributes. 
+
+It creates a table that fills up with rows of the k-v 
+values as inputs, plus a button to eliminate every pair.
+
 Under it, there's a button to add an empty new k-v pair.
 
-Structure of the state:
+Structure of the state (props from fileuploader -> optionsbox -> this):
 valueArray = [ KV_DEFAULT_DICT, KV_DEFAULT_DICT, ... ] */
 const KeyValueAssign = ({ valueArray, setValueArray, options={} }) => {
     const stateArray = valueArray.slice();
@@ -18,19 +20,24 @@ const KeyValueAssign = ({ valueArray, setValueArray, options={} }) => {
         const htmlSelector = kvDict.htmlSelector;
         const fontValue = kvDict.fontValue;
         const marginTopValue = kvDict.marginTopValue;
+        const widthValue = kvDict.widthValue;
         totalRows.push(
             <tr key={"KVRow"+index}>
                 <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/4">
                     <KVInput text={htmlSelector} oldState={stateArray} 
-                        key={"cl"+index} pos={index} type="class" setData={setValueArray} />
+                        key={"cl"+index} pos={index} type="selector" setData={setValueArray} />
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/4">
                     <KVInput text={fontValue} oldState={stateArray} 
-                        key={"fn"+index} pos={index} type="font" setData={setValueArray} />
+                        key={"fn"+index} pos={index} type="fontValue" setData={setValueArray} />
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/4">
                     <KVInput text={marginTopValue} oldState={stateArray} 
-                        key={"fn"+index} pos={index} type="marginT" setData={setValueArray} />
+                        key={"fn"+index} pos={index} type="marginTopValue" setData={setValueArray} />
+                </td>
+                <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/4">
+                    <KVInput text={widthValue} oldState={stateArray} 
+                        key={"fn"+index} pos={index} type="widthValue" setData={setValueArray} />
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/12">
                     <RemoveKey associatedPos={index} oldState={stateArray} 
@@ -58,11 +65,15 @@ const KeyValueAssign = ({ valueArray, setValueArray, options={} }) => {
                                     </th>
                                     <th scope="col" 
                                         className="py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">
-                                        Nova mida font (px)
+                                        mida font (px)
                                     </th>
                                     <th scope="col" 
                                         className="py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">
-                                        Nova mida marge vert (px)
+                                        mida marge vert (px)
+                                    </th>
+                                    <th scope="col" 
+                                        className="py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">
+                                        mida horitz (px)
                                     </th>
                                     <th scope="col" 
                                         className="py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">
@@ -93,7 +104,7 @@ const KVInput = ({ text, pos, type, oldState, setData }) => {
             type="text" value={text} maxLength="60"
             onChange={(e) => {
                 setData(
-                    setKVDictState(oldState, KV_ACTIONS.MODIFY, {pos: pos, type:type, newValue: e.target.value})
+                    setKVDictState(oldState, KV_ACTIONS.MODIFY, {pos: pos, type: type, newValue: e.target.value})
                 )}}
             />
             
@@ -145,12 +156,15 @@ function setKVDictState(oldState, action, payload) {
             return state;
         case KV_ACTIONS.MODIFY:
             const dict = state[payload.pos];
-            if (payload.type === "class") {
+            const affectedKey =  payload.type;
+            if (affectedKey === "selector") {
                 dict["htmlSelector"] = payload.newValue;
-            } else if (payload.type === "font") {
-                dict["fontValue"] = getANumber(payload.newValue);
             } else {
-                dict["marginTopValue"] = getANumber(payload.newValue);
+                //So far, all other properties are numerical
+                //(number in px to assign to the new property)
+                if (dict.hasOwnProperty(affectedKey)) {
+                    dict[affectedKey] = getANumber(payload.newValue);
+                }
             }
             return state;
         default:
