@@ -52,13 +52,12 @@ export async function editHTML(htmlElement, options) {
     let errorsData = "";
     const erroneousSelectors = selectorErrors.filter(el => el !== "");
     if (erroneousSelectors.length > 0) {
-      const firstPhrase = selectorErrors.length > 1 ? "No s'han aplicat els canvis dels següents selector invalids:  " :
-          "No s'ha aplicat el canvi del següent selector invalid:  ";
-      
+      const firstPhrase = selectorErrors.length > 1 ? "Selectors invàlids:  " :
+          "Selector invàlid:  ";
       errorsData = firstPhrase + erroneousSelectors.join(", ");
     }
 
-    return {html: htmlElement, errors: selectorErrors, errorsData: errorsData};
+    return {html: htmlElement, errorsData: errorsData};
   }
 
 

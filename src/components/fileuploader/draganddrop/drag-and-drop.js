@@ -58,7 +58,7 @@ const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
     reader.readAsText(files[0]);
     reader.onload = async loadEvt => {
       const finalHTML = await processDrop(loadEvt.target.result);
-      if (finalHTML["errors"]) {
+      if (finalHTML["errorsData"] !== "") {
           setError(finalHTML["errorsData"]);
       }
       setData(finalHTML["html"].innerHTML);
