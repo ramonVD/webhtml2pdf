@@ -10,6 +10,7 @@ export const FILE_UPLOADER_STATE = {
     INIT: "INIT",
     PROCESSING: "PROCESSING",
     SUCCESS: "SUCCESS",
+    PARTIAL_SUCCESS: "PARTIAL_SUCCESS",
     FAILURE: "FAILURE"
 };
 
@@ -25,6 +26,11 @@ export const FILE_UPLOADER_STATE_JSX = {
                 </div>,
     SUCCESS: <>
                 <div className="md:text-2xl py-3 text-green-500 font-bold">Fet</div>
+                <div className="md:text-lg mb-4">prem un altre cop per buscar un altre arxiu</div>
+            </>,
+    PARTIAL_SUCCESS: 
+            <>
+                <div className="md:text-2xl py-3 text-yellow-500 font-bold">Fet, amb errors</div>
                 <div className="md:text-lg mb-4">prem un altre cop per buscar un altre arxiu</div>
             </>,
     FAILURE: <>Hi ha hagut algun error carregant l'arxiu</>

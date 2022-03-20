@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useRef } from "react";
 
 /*Hidden iframe that loads the contents of an html element generated from 
 the file that the user uploads, then prints its contents*/
@@ -6,6 +6,8 @@ const ContentFrame = (props) => {
 
 const { iframeContent = "" } = props;
 const { handleUploadChange = function() {} } = props;
+const cfRef = useRef(0);
+const errorState = props.errorState;
 const ifID = "ifContentLoader";
 
   useEffect(() => {
@@ -30,7 +32,8 @@ const ifID = "ifContentLoader";
     const handleLoad = (event) => {
       if (event.target.srcdoc !== "") {
         printIFContents(ifID);
-        handleUploadChange("SUCCESS");
+        const success = (cfRef.current.getAttribute("data-error") === "") ? "SUCCESS" : "PARTIAL_SUCCESS";
+        handleUploadChange(success);
       }
     }
 
@@ -42,9 +45,8 @@ const ifID = "ifContentLoader";
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
 return (
-    <iframe src="" className="hidden"
+    <iframe src="" className="hidden" ref={cfRef} data-error={errorState}
     title="Hidden Content Loader" name="HCl" id={ifID}
     srcDoc={iframeContent}></iframe>
 )    

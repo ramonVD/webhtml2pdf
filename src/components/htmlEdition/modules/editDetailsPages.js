@@ -1,4 +1,4 @@
-import { removeIfExists, elementExists } from "./aux/utils";
+import { removeIfExists, elementExists } from "../aux/utils";
 
 /*Check if the element is a IOC book or chapter, then apply some cleaning
 to its elements depending on the existing selected options.*/
@@ -13,7 +13,7 @@ export function cleanIOCBookOrChapter(htmlElement, options={}) {
     if (options.removeIndex) {
       eliminateContentsTable(htmlElement);
     } 
-    if (options.addTitlePage && options.removeDetails && options.removeIndex) {
+    if (options.addTitlePage && options.removeDetails) {
       createMainTitlePage(htmlElement, text);
     }
   } else if (isIOCChapter(htmlElement)) {

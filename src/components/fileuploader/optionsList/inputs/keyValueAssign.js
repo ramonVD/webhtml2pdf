@@ -1,18 +1,18 @@
-import { getANumber } from "../optionsbox";
+import { setKVDictState, KV_ACTIONS } from "./keyValueAssignState";
 
-/*Element with an array of dicts that assign to a certain key a specific value*/
+/*Element that generates a table that is filled with the data from
+an array of dicts*/
 
-const KV_DEFAULT_DICT = {htmlSelector: "", fontValue: "", marginTopValue: "", widthValue: ""};
-/*In this concrete case, need an element to assign to a specific element
-in the DOM a value for one of its attributes. 
+/*In this concrete case, this structure is used to assign to a specific element
+in the DOM a value for some of its attributes. Specific attributes that
+are able to be changed this way are found in the file kvAssignState.
 
-It creates a table that fills up with rows of the k-v 
-values as inputs, plus a button to eliminate every pair.
+It generates a table that fills up with rows of the k-v 
+values as inputs, plus a button to eliminate every row.
 
-Under it, there's a button to add an empty new k-v pair.
+Under it, there's a button to add an empty new k-v row or eliminate them all.
 
-Structure of the state (props from fileuploader -> optionsbox -> this):
-valueArray = [ KV_DEFAULT_DICT, KV_DEFAULT_DICT, ... ] */
+State is props from fileuploader -> optionsbox -> this:*/
 const KeyValueAssign = ({ valueArray, setValueArray, options={} }) => {
     const stateArray = valueArray.slice();
     const totalRows = [];
@@ -21,23 +21,28 @@ const KeyValueAssign = ({ valueArray, setValueArray, options={} }) => {
         const fontValue = kvDict.fontValue;
         const marginTopValue = kvDict.marginTopValue;
         const widthValue = kvDict.widthValue;
+        const bgValue = kvDict.bgColorValue;
         totalRows.push(
             <tr key={"KVRow"+index}>
-                <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/4">
+                <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/6">
                     <KVInput text={htmlSelector} oldState={stateArray} 
                         key={"cl"+index} pos={index} type="selector" setData={setValueArray} />
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/4">
-                    <KVInput text={fontValue} oldState={stateArray} 
+                <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/6">
+                    <KVInput text={fontValue} oldState={stateArray} returnType="uint"
                         key={"fn"+index} pos={index} type="fontValue" setData={setValueArray} />
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/4">
-                    <KVInput text={marginTopValue} oldState={stateArray} 
-                        key={"fn"+index} pos={index} type="marginTopValue" setData={setValueArray} />
+                <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/6">
+                    <KVInput text={marginTopValue} oldState={stateArray} returnType="int"
+                        key={"mt"+index} pos={index} type="marginTopValue" setData={setValueArray} />
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/4">
-                    <KVInput text={widthValue} oldState={stateArray} 
-                        key={"fn"+index} pos={index} type="widthValue" setData={setValueArray} />
+                <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/6">
+                    <KVInput text={widthValue} oldState={stateArray}  returnType="uint"
+                        key={"w"+index} pos={index} type="widthValue" setData={setValueArray} />
+                </td>
+                <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/6">
+                    <KVInput text={bgValue} oldState={stateArray}  returnType="hex"
+                        key={"bg"+index} pos={index} type="bgColorValue" setData={setValueArray} />
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/12">
                     <RemoveKey associatedPos={index} oldState={stateArray} 
@@ -49,7 +54,7 @@ const KeyValueAssign = ({ valueArray, setValueArray, options={} }) => {
 
     return (
         <div className="md:overflow-x-hidden overflow-x-scroll">
-            <div className="text-center font-bold mb-2 mt-5">
+            <div className="text-center font-bold mb-3 mt-5">
                 Modifica elements concrets al document (avançat)
             </div>
         {totalRows.length > 0 && <div className="flex flex-col">
@@ -77,6 +82,10 @@ const KeyValueAssign = ({ valueArray, setValueArray, options={} }) => {
                                     </th>
                                     <th scope="col" 
                                         className="py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">
+                                        color fons (hex)
+                                    </th>
+                                    <th scope="col" 
+                                        className="py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">
                                         Elimina
                                     </th>
                                 </tr>
@@ -88,23 +97,33 @@ const KeyValueAssign = ({ valueArray, setValueArray, options={} }) => {
                     </div>
                 </div>
             </div>
-        </div>}
+        </div>} 
+        <div className="grid">
+        <div className="flex justify-around">
             <AddKey oldState={valueArray} setData={setValueArray} key="addK" />
+            {valueArray.length > 0 && <RemoveAllKeys oldState={valueArray} setData={setValueArray} />}
+            </div>
+            <div className="flex">
+
+            </div>
+        </div>
         </div>
     );
 }
 
 /*Single input element that handles setting the state data*/
-const KVInput = ({ text, pos, type, oldState, setData }) => {
+const KVInput = ({ text, pos, type, returnType, oldState, setData }) => {
     const NIName = "NI-" + text.substring(0,Math.min(text.length, 3));
     return (
         <div>
-            <input name={NIName} className={`appearance-none md:text-center text-gray-700 border
-            border-gray-200 rounded py-3 px-2 leading-tight focus:outline-none w-full focus:bg-white focus:border-gray-500`} 
+            <input name={NIName} className={`appearance-none md:text-center text-gray-700 
+            border border-gray-200 rounded py-3 md:px-2 px-1 leading-tight focus:outline-none
+            w-full focus:bg-white focus:border-gray-500`} 
             type="text" value={text} maxLength="60"
             onChange={(e) => {
                 setData(
-                    setKVDictState(oldState, KV_ACTIONS.MODIFY, {pos: pos, type: type, newValue: e.target.value})
+                    setKVDictState(oldState, KV_ACTIONS.MODIFY, 
+                        {pos: pos, type: type, newValue: e.target.value, returnType: returnType})
                 )}}
             />
             
@@ -115,61 +134,36 @@ const KVInput = ({ text, pos, type, oldState, setData }) => {
 /*Button that creates a new k-v pair in the array*/
 const AddKey = ({ oldState, setData }) => {
     return (
-        <div className="flex justify-center">
-            <button className={`text-white bg-green-700 hover:bg-green-800 focus:ring-4 
-            focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center 
-            mr-2 mt-1 mb-5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800`}
+            <button className={`bg-emerald-500 text-white active:bg-emerald-600 
+            font-bold uppercase text-xs px-4 py-3 rounded shadow hover:shadow-md 
+            outline-none focus:outline-none mr-1 mb-2 ease-linear transition-all 
+            duration-150`}
             onClick={() => {setData(setKVDictState(oldState, KV_ACTIONS.ADD))}}
             >Afegeix element</button>
-        </div>
     )
 }
 
 /*Button that removes the specific pos in the classname-fontsize array*/
 const RemoveKey = ({ associatedPos, oldState, setData }) => {
     return (
-        <div className={`text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 cursor-pointer align-middle
-        font-medium rounded md:px-3 px-2 md:py-3 py-2 text-center sm:mx-2 md:mx-4 mx-1 my-1 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900`}
+        <div className={`text-white bg-red-500 hover:bg-red-600 font-bold uppercase 
+        cursor-pointer shadow hover:shadow-md outline-none focus:outline-none
+        rounded md:px-3 px-2 md:py-3 py-2 text-center sm:mx-2 md:mx-4 
+        mx-1 my-2 ease-linear transition-all duration-150`}
         onClick={() => {setData(setKVDictState(oldState, KV_ACTIONS.REMOVE, associatedPos))}}
         >X</div>
     );
 }
 
-
-/*Possible actions for setting state values*/
-const KV_ACTIONS = {
-    REMOVE: "REMOVE",
-    ADD: "ADD",
-    MODIFY: "MODIFY",
-}
-
-/*State actions handling*/
-function setKVDictState(oldState, action, payload) {
-    const state = oldState.slice();
-    //Maybe emit an event when new userstuff added doesnt work... or just use the ref...
-    switch (action) {
-        case KV_ACTIONS.ADD:
-            state.push(KV_DEFAULT_DICT);
-            return state;
-        case KV_ACTIONS.REMOVE:
-            state.splice(payload, 1);
-            return state;
-        case KV_ACTIONS.MODIFY:
-            const dict = state[payload.pos];
-            const affectedKey =  payload.type;
-            if (affectedKey === "selector") {
-                dict["htmlSelector"] = payload.newValue;
-            } else {
-                //So far, all other properties are numerical
-                //(number in px to assign to the new property)
-                if (dict.hasOwnProperty(affectedKey)) {
-                    dict[affectedKey] = getANumber(payload.newValue);
-                }
-            }
-            return state;
-        default:
-            return state;
-    }
+const RemoveAllKeys = ({ oldState, setData }) => {
+    return (
+        <button className={`text-white bg-red-500 hover:bg-red-600 font-bold uppercase 
+        cursor-pointer text-xs shadow hover:shadow-md outline-none focus:outline-none
+        rounded md:px-3 px-2 md:py-3 py-2 text-center sm:mx-2 md:mx-4 
+        mr-1 mb-2 ease-linear transition-all duration-150`}
+        onClick={() => {setData(setKVDictState(oldState, KV_ACTIONS.REMOVE, -1))}}
+        >Elimina tots</button>
+    ); 
 }
 
 export default KeyValueAssign;

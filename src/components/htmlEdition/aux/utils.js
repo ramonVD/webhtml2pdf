@@ -64,14 +64,6 @@ export function FindByStyleAttr(htmlElement, attribute) {
 }
 
 
-/*Prepend a backslash to a special regex character*/
-export function backslashSpecialRegexChars(char) {
-  // eslint-disable-next-line no-useless-escape
-  if (char.match(/[\.\+\*\?\^\$\(\)\[\]\{\}\|\\]/)) {
-      return "\\" + char;
-  }
-  return char;
-}
 
 //Check if its a valid number.
 // https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric
