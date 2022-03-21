@@ -34,10 +34,7 @@ export const createCleanHTMLElement = (htmlString) => {
     return htmlElement;
 }
 
-/* Check that the string is not empty. 
-Note: The idea was to check here that it was a valid html construct, but in 
-use cases I was getting some weird pages as input without html tags and such,
-so in the end just check its non empty. Yeah...*/
+/* Check that the string is not empty.*/
 export const NonEmptyHTMLString = (string) => {
     if (string === null || string === undefined || string === "") {
         return "";
@@ -46,8 +43,8 @@ export const NonEmptyHTMLString = (string) => {
 }
 
 
-/*Remove meta elements, some icon links (just those, leaving the css 
-stylesheets) and stuff like that*/
+/*Remove meta elements, some icon links (just those, leaves the links to
+css stylesheets) and links not included in an approved types array*/
 const removeSuperfluousHeadElements = (head) => {
     //Note: DOMPurify removes meta elements, but just in case...
     const headElements = head.querySelectorAll("link, meta");

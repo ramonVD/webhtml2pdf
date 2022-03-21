@@ -16,8 +16,8 @@ export async function editHTML(htmlElement, options) {
     //Increase body and headers base or total font
     if (options.bodyFontSize === "" || options.bodyFontSize < 0) { options.bodyFontSize = 1;}
     const MIDA_FONT_BASE = options.bodyFontSize + options.selectedFontType;
-    const changeHeaderFontValue = options.selectedFontType === "em" ? 0.2 : 2;
     //Very empirical, and very cool
+    const changeHeaderFontValue = options.selectedFontType === "em" ? 0.2 : 2;
     const MIDA_FONT_HEADERS = parseFloat(parseFloat(options.bodyFontSize) - changeHeaderFontValue)
      + options.selectedFontType;
     

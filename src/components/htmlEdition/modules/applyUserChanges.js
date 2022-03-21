@@ -43,7 +43,8 @@ export function applyUserChangesToSelectors(htmlElement, arrayOfSelectorValuesDi
                                     if (selVal[property].charAt(0) === "#") {
                                         //sanitize hypothetical hex value, no need to add zeroes or Fs
                                         //to the right, css does that automatically apparently?
-                                        propertyValue = isNumber(selVal[property].substring(1)) ? selVal[property] : "";
+                                        const NonHexPattern = /[^0-9a-fA-F#]/g;
+                                        propertyValue = NonHexPattern.test(selVal[property]) ? "" : selVal[property];
                                     } else {                           
                                     /*Sanitize in case its not a number...*/
                                     /*Maybe implement maximum/minimum values for specific properties (
