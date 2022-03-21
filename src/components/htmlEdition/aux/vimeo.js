@@ -17,7 +17,7 @@ export async function getVimeoThumbnailSrc(videoSrc) {
         const vimeoID = videoIDMatch[1];
     
         //https://stackoverflow.com/questions/1361149/get-img-thumbnails-from-vimeo
-        const vimeoJSON = await fetch(`http://vimeo.com/api/v2/video/${vimeoID}.json`)
+        const vimeoJSON = await fetch(`https://vimeo.com/api/v2/video/${vimeoID}.json`)
         .then(res => {
             if (res.status >= 400) {
             console.log("Error - cannot access vimeo API.");

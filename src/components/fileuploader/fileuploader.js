@@ -1,40 +1,42 @@
 /*File uploader with drag and drop adapted from:
  https://codesandbox.io/s/github/dineshselvantdm/drag-drop-file-upload-react-hooks?file=/utils/drag-drop.js*/
-import React, { useState} from "react";
+import React, { useState } from "react";
 import DragAndDrop from "./draganddrop/drag-and-drop";
-import { createCleanHTMLElement, NonEmptyHTMLString } from "../htmlUtils/parseHTMLFiles";
-import editHTML from "../htmlUtils/editMainHTML";
+import { createCleanHTMLElement, NonEmptyHTMLString } from "../htmlEdition/parseHTMLFiles";
+import editHTML from "../htmlEdition/mainHTMLEdition";
 import Optionsbox from "./optionsList/optionsbox";
 import { FILE_UPLOADER_STATE, FILE_UPLOADER_STATE_JSX, 
-  UPLOADED_FILE_SETTINGS } from "./config/fileuploaderState";
-import { defaultHTMLEditOptions } from "./config/optionsState";
+  UPLOADED_FILE_SETTINGS } from "./fileuploaderState";
+import { getUserOptionsState, copyUserEdits } from "./optionsList/optionsState";
+import { setStateAndSaveInStorage } from "../localStorage/sessionHandling";
 
 /*Main element of the app.
 Consists of an options accordion with the possible options applied when editing the html,
 and a drag & drop box + button to upload the desired file that will be edited then
 saved as pdf by the user.
+Localstorage is checked first when loading the userOptionsState, and from
+then on just check state and save its changes to localstorage.
 Technically, the file's contents will be cleaned and edited first, then drawn on the page
 and displayed for the user to be printed as a pdf.*/
-
 
 const FileUploader = () => {
   /*Isnt there a better way... than send all these as props?
   Sometimes I miss getState();*/
+
+  const options = getUserOptionsState();
+
   /*Upper component state*/
-  const [bodyFontSize, setBodyFontSize] = useState(defaultHTMLEditOptions.MIDA_FONT);
-  const [selectedFontType, setSelectedFontType] = useState(defaultHTMLEditOptions.MIDA_FONT_UNITS);
-  const [increaseFixedSize, setIncreaseFixedSize] = useState(defaultHTMLEditOptions.AUGMENTAR_MIDA_FONT_PX);
-  const [videoImgsState, setVideoImgsState] = useState(0);
-  const [removeDetails, setRemoveDetails] = useState(false);
-  const [removeIndex, setRemoveIndex] = useState(false);
-  const [addTitlePage, setAddTitlePage] = useState(false);
+  const [bodyFontSize, setBodyFontSize] = useState(options.bodyFontSize);
+  const [selectedFontType, setSelectedFontType] = useState(options.selectedFontType);
+  const [increaseFixedSize, setIncreaseFixedSize] = useState(options.increaseFixedSize);
+  const [videoImgsState, setVideoImgsState] = useState(options.videoImgsState);
+  const [removeDetails, setRemoveDetails] = useState(options.removeDetails);
+  const [removeIndex, setRemoveIndex] = useState(options.removeIndex);
+  const [addTitlePage, setAddTitlePage] = useState(options.addTitlePage);
   /*Set a default initial state here to fix the problems that arise
    if this element exists in the document (and we're using default values)*/
-  const [elementSizeArray, setElementSizeArray] = useState([{
-      htmlSelector: ".exemple", fontValue: "20",
-      marginTopValue: "", widthValue: ""
-  }]);
-  const [noNbsp, setNoNbsp] = useState(defaultHTMLEditOptions.NO_NBSP);
+  const [userEdits, setUserEdits] = useState(copyUserEdits(options.userEdits));
+  const [noNbsp, setNoNbsp] = useState(options.noNbsp);
 
   const optionsValues = {
     bodyFontSize: bodyFontSize, 
@@ -44,24 +46,24 @@ const FileUploader = () => {
     removeDetails: removeDetails,
     removeIndex: removeIndex,
     addTitlePage: addTitlePage,
-    elementSizeArray: elementSizeArray,
-    noNbsp:noNbsp
+    userEdits: userEdits,
+    noNbsp: noNbsp
   }
 
   const optionsSetters = {
-    setBodyFontSize: setBodyFontSize,
-    setSelectedFontType: setSelectedFontType,
-    setIncreaseFixedSize: setIncreaseFixedSize,
-    setVideoImgsState: setVideoImgsState,
-    setRemoveDetails: setRemoveDetails,
-    setRemoveIndex: setRemoveIndex,
-    setAddTitlePage: setAddTitlePage,
-    setElementSizeArray: setElementSizeArray,
-    setNoNbsp: setNoNbsp
+    setBodyFontSize: (value) => { setStateAndSaveInStorage(value, setBodyFontSize, "bodyFontSize"); },
+    setSelectedFontType: (value) => { setStateAndSaveInStorage(value, setSelectedFontType, "selectedFontType"); },
+    setIncreaseFixedSize: (value) => { setStateAndSaveInStorage(value, setIncreaseFixedSize, "increaseFixedSize"); },
+    setVideoImgsState: (value) => { setStateAndSaveInStorage(value, setVideoImgsState, "videoImgsState"); },
+    setRemoveDetails: (value) => { setStateAndSaveInStorage(value, setRemoveDetails, "removeDetails"); },
+    setRemoveIndex: (value) => { setStateAndSaveInStorage(value, setRemoveIndex, "removeIndex"); },
+    setAddTitlePage: (value) => { setStateAndSaveInStorage(value, setAddTitlePage, "addTitlePage"); },
+    setUserEdits: (value) => { setStateAndSaveInStorage(value, setUserEdits, "userEdits"); },
+    setNoNbsp: (value) => { setStateAndSaveInStorage(value, setNoNbsp, "noNbsp"); }
   }
 
   const [loaderState, setLoaderState] = useState(FILE_UPLOADER_STATE.INIT);
-
+  
   const processDrop = async HTMLString => {
     setLoaderState(FILE_UPLOADER_STATE.PROCESSING);
     /*Validate that its a real html file*/
@@ -81,7 +83,7 @@ const FileUploader = () => {
       <Optionsbox optionsProps={{...optionsValues, ...optionsSetters}} />
       <div className="flex">
         <DragAndDrop processDrop={processDrop} config={UPLOADED_FILE_SETTINGS}
-                      handleUploadChange={setLoaderState}>
+                      handleUploadChange={setLoaderState} >
           {FILE_UPLOADER_STATE_JSX[loaderState]}
         </DragAndDrop>
       </div>

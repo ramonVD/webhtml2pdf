@@ -1,12 +1,9 @@
-/*Functions to edit videos html, changing their formats, adding thumbnails...*/
-import { isYoutubeVideo, getYoutubeThumbnailSrc } from "./aux/youtube";
-import { isVimeoVideo, getVimeoThumbnailSrc } from './aux/vimeo';
-import isH5P from "./aux/H5P";
-import { getVideoSrc } from './aux/utils';
-/* So far, only need to fetch API info when encountering Vimeo videos.
-TO-DO: 
-- Need to implement Promise.all to call for all videos info simultaneously
-- LINK TO THE VIDEO AFTER THE THUMBNAIL IS AN OPTION, NOT DONE ALWAYS*/
+import { isYoutubeVideo, getYoutubeThumbnailSrc } from "../aux/youtube";
+import { isVimeoVideo, getVimeoThumbnailSrc } from '../aux/vimeo';
+import isH5P from "../aux/H5P";
+import { getVideoSrc } from '../aux/utils';
+/* Functions to edit videos' html, changing their formats, adding thumbnails...
+So far, only need to fetch API info when encountering Vimeo videos.*/
 
 /*Function to replace videos and iframes with videos to a text with a link
 to the video*/
@@ -91,13 +88,13 @@ export async function createVideosThumbnail(htmlElement, imgAndLink) {
 }
 
 /*Inserts the thumbnail image in the dom before the video element,
-makes the video element invisible.*/
+then removes the original video element.*/
 const insertThumbnailForVideo = (video, thumbnailImgSrc, videoSrc, imgAndLink) => {
   const videoDim = getVideoDims(video);
   //making the iframe invisible, inserting thumbnail img on top of it
   const img = createImgWSrcText(thumbnailImgSrc, videoDim, videoSrc, imgAndLink);
-  video.style.display = "none";
   video.parentNode.insertBefore(img, video);
+  video.remove();
 }
 
 /*Creates a div containing an image from a src with the desired dimentions,

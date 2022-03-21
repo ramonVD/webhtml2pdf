@@ -64,17 +64,24 @@ export function FindByStyleAttr(htmlElement, attribute) {
 }
 
 
-/*Prepend a backslash to a special regex character*/
-export function backslashSpecialRegexChars(char) {
-  // eslint-disable-next-line no-useless-escape
-  if (char.match(/[\.\+\*\?\^\$\(\)\[\]\{\}\|\\]/)) {
-      return "\\" + char;
-  }
-  return char;
-}
 
 //Check if its a valid number.
 // https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric
 export function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+
+  
+/*Eliminates children elements of the parent node until an element
+with the desired class has been found. Careful with this.*/
+export function eliminateChildrenUntilFindClass(parentNode, className) {
+  if (!elementExists(parentNode)) { return; }
+  const children = parentNode.children;
+  for (let childElement of Array.from(children)) {
+    if (childElement.classList.contains(className)) {
+      break;
+    }
+    childElement.remove();
+  }
 }

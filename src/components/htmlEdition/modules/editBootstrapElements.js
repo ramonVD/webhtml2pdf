@@ -1,5 +1,5 @@
 /*functions to fix some bootstrap idiosincracies when printing*/
-import { elementExists } from "./aux/utils";
+import { elementExists } from "../aux/utils";
 
 //BOOTSTRAP - TABLES
 
@@ -22,7 +22,6 @@ const fixTableBackground = (table) => {
             if (classList.length > 0) {
                 const tableClassMatch = classList.join(",").match(/table-(\w+)/);
                 if (tableClassMatch && tableClassMatch[1].length > 0) {
-                    //match a la posicio 1 és el tipus de bg:
                     const finalbgColor = getBootstrapTableColor(tableClassMatch[1]);
                     if (finalbgColor !== "") {
                         propagateBgColorToCells(tableChild, finalbgColor);
@@ -90,6 +89,9 @@ export function openAllCollapsablesAndTabs(htmlElement, cssOptions) {
     collapsables.forEach(function(collapsable) {
         collapsable.style.display = "block";
         const collapsedID = collapsable.id;
+        if (collapsable.style.height === "0px") { 
+            collapsable.style.height = ""; 
+        }
         const relatedLink = htmlElement.querySelector(`[href='#${collapsedID}']`);
         /*This link doesnt make sense on a pdf (its just to relate both elements so
         clicking on one opens the other), just remove it*/
@@ -147,9 +149,9 @@ const explodeNavContainer = (tabContentElement) => {
             internalLink.classList.add("show");
             internalLink.href = "";
             li.classList.add("mb-0");
-            /*Maybe make this optional... (but if I dont do this, it's just the default
-            "active" color, which doesnt differentiate it much from the content*/
-            internalLink.style.setProperty("background-color", "#f8f9fa", "important");
+            /*Optional... (if I dont do this, it's just the default
+            "active" color, which doesnt differentiate it much from the content
+            internalLink.style.setProperty("background-color", "#f8f9fa", "important");*/
         }
         titles.push(li.cloneNode(true));
     });
