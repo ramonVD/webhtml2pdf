@@ -30,7 +30,7 @@ const Optionsbox = ({optionsProps}) => {
     backgroundColor: "white", overflowX: "hidden", transition: "0.4s", zIndex:"20"}
     return (
         <div className={`bg-gray-100 text-center hover:bg-gray-200 text-gray-700 cursor-pointer pb-2 
-        pt-3 px-3 border border-gray-400 rounded my-4 xl:w-1/2 md:5/6 w-11/12 sm:text-base text-xs mx-auto`}
+            pt-3 px-3 border border-gray-400 rounded my-4 xl:w-7/12 md:5/6 w-11/12 sm:text-base text-xs mx-auto`}
             ref={accordionPanel}
             onClick={() => {handleToggleAccordion();}}>
                 <span className="text-xl font-bold">Opcions</span>
@@ -47,7 +47,7 @@ const Optionsbox = ({optionsProps}) => {
                             handleChange={(e) => {setIncreaseFixedSize(getANumber(e.target.value, 
                                 {isFloat: false, canBeNegative: false} ))}} />
                     </div>
-                    <div className="flex mb-4 w-full justify-around">
+                    <div className="flex mb-2 w-full justify-around">
                         <div className="flex mb-4 px-2 flex-col">
                             <div className="flex mb-4 px-2">
                                 <RadioButtons text={EDIT_VIDEOS_STATE_TEXT} 
