@@ -1,8 +1,8 @@
 /*Functions to edit videos html, changing their formats, adding thumbnails...*/
-import { isYoutubeVideo, getYoutubeThumbnailSrc } from "./aux/youtube";
-import { isVimeoVideo, getVimeoThumbnailSrc } from './aux/vimeo';
-import isH5P from "./aux/H5P";
-import { getVideoSrc } from './aux/utils';
+import { isYoutubeVideo, getYoutubeThumbnailSrc } from "../aux/youtube";
+import { isVimeoVideo, getVimeoThumbnailSrc } from '../aux/vimeo';
+import isH5P from "../aux/H5P";
+import { getVideoSrc } from '../aux/utils';
 /* So far, only need to fetch API info when encountering Vimeo videos.
 TO-DO: 
 - Need to implement Promise.all to call for all videos info simultaneously
@@ -38,6 +38,8 @@ export function replaceVideosWithLink(htmlElement) {
     const newLink = document.createElement('a');
     newLink.innerText = (src === "") ? "No trobat" : src;
     newLink.href = (src === "") ?  "#" : src;
+    //Dunno if needed because in the end, its a pdf doc...
+    newLink.rel = "noopener";
     p.appendChild(newLink);
     newDiv.appendChild(p);
     return newDiv;

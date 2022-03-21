@@ -6,6 +6,7 @@ function isIframe(element) {
 function isVideo(element) {
     return element.tagName.toLowerCase() === "video";
 }
+
   
 //To avoid function name collision?
 export const isAnArray = (element) => element.constructor === Array
@@ -60,4 +61,12 @@ export function FindByStyleAttr(htmlElement, attribute) {
     }
   }
   return foundElements;
+}
+
+
+
+//Check if its a valid number.
+// https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric
+export function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
 }

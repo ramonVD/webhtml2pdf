@@ -3,7 +3,8 @@ import { NumericalInput, NumericalInputWSelect} from "./inputs/numericalInputs";
 import Checkbox from "./inputs/checkboxes";
 import RadioButtons from "./inputs/radioButtons";
 import KeyValueAssign from "./inputs/keyValueAssign";
-import { EDIT_VIDEOS_HTML_STATE } from "../config/optionsState";
+import { EDIT_VIDEOS_STATE_TEXT, resetUserOptions} from "./optionsState";
+import { getANumber } from "./aux/inputUtils";
 
 /*Generates an accordion that contains an editable set of options that define what 
 settings to apply when editing the html file*/
@@ -15,7 +16,7 @@ const Optionsbox = ({optionsProps}) => {
     const {removeDetails, setRemoveDetails} = optionsProps;
     const {removeIndex, setRemoveIndex} = optionsProps;
     const {addTitlePage, setAddTitlePage} = optionsProps;
-    const {elementSizeArray, setElementSizeArray} = optionsProps;
+    const {userEdits, setUserEdits} = optionsProps;
     const {noNbsp, setNoNbsp} = optionsProps;
 
     const [open, setOpen] = useState(false);
@@ -37,18 +38,29 @@ const Optionsbox = ({optionsProps}) => {
                 onClick={(e) => {e.stopPropagation();}}>
                     <div className="flex mb-4 mt-2 w-full justify-center">
                         <NumericalInputWSelect text="Nova mida de la font del cos" inputValue={bodyFontSize} 
-                            handleInputChange={(e) => {setBodyFontSize(getANumber(e.target.value))}} 
+                            handleInputChange={(e) => {setBodyFontSize(getANumber(e.target.value, 
+                                {isFloat: selectedFontType === "em", canBeNegative: true} ))}} 
                             optionsJSX={selectOptions}
                             selectValue={selectedFontType}
                             handleSelectChange={(e) => {setSelectedFontType(e.target.value)}} />
                         <NumericalInput text="Augmenta mida font elements fixats (px)" value={increaseFixedSize}
-                            handleChange={(e) => {setIncreaseFixedSize(getANumber(e.target.value))}} />
+                            handleChange={(e) => {setIncreaseFixedSize(getANumber(e.target.value, 
+                                {isFloat: false, canBeNegative: false} ))}} />
                     </div>
                     <div className="flex mb-4 w-full justify-around">
-                        <div className="flex mb-4 px-2">
-                            <RadioButtons text={EDIT_VIDEOS_HTML_STATE} 
-                            setterFunction={setVideoImgsState} startingOptionPos={videoImgsState} />
+                        <div className="flex mb-4 px-2 flex-col">
+                            <div className="flex mb-4 px-2">
+                                <RadioButtons text={EDIT_VIDEOS_STATE_TEXT} 
+                                setterFunction={setVideoImgsState} startingOptionPos={videoImgsState} />
+                            </div>
+                            <button className={`bg-sky-500 text-white active:bg-sky-600 md:font-bold md:uppercase 
+                            text-xs px-3 py-1 rounded-full shadow hover:shadow-md outline-none focus:outline-none 
+                            mr-1 mb-1 ease-linear transition-all duration-150`} 
+                            onClick={() => {resetUserOptions(optionsProps);}} type="button">
+                                Valors per defecte
+                            </button>
                         </div>
+
                         <div className="flex flex-col">
                             <div className="flex mb-2 px-2">
                                 <Checkbox text={"Elimina espais en blanc extra"} 
@@ -64,33 +76,15 @@ const Optionsbox = ({optionsProps}) => {
                             </div>
                             <div className="flex mb-2 px-2">
                                 <Checkbox text={"Afegeix pàgina títol (llibre IOC)"} 
-                                    checked={addTitlePage && removeIndex && removeDetails} setChecked={setAddTitlePage} 
-                                    options={{disabled: !removeDetails || !removeIndex}} />
+                                    checked={addTitlePage && removeDetails} setChecked={setAddTitlePage} 
+                                    options={{disabled: !removeDetails}} />
                             </div>
                         </div>
                     </div>
-                    <KeyValueAssign valueArray={elementSizeArray} setValueArray={setElementSizeArray} />
+                    <KeyValueAssign valueArray={userEdits} setValueArray={setUserEdits} />
                 </div>
         </div>
     );
-}
-
-/*Function to apply to a text after a new digit/letter/symbol has been added to that text.
-It removes all* non-numbers (*it also leaves a single period if there are any)
-from the text and returns it*/
-export const getANumber = (text) => {
-    let noLetters = text.replace(/[^0-9.]/g, "");
-    //NOTA: Aixo per evitar coses rares com 1.23141.2515.35235
-    if (noLetters.indexOf(".") !== -1) {
-        const restOfString = noLetters.substring(noLetters.indexOf(".")+1);
-        const removeOtherPeriods = restOfString.replace(/\./g, "");
-        noLetters = noLetters.substring(0, noLetters.indexOf(".")+1) + removeOtherPeriods;
-    }
-    const tryNumber = parseFloat(noLetters);
-    if (!isNaN(tryNumber)) {
-        return noLetters;
-    }
-    return "";
 }
 
 export default Optionsbox;
