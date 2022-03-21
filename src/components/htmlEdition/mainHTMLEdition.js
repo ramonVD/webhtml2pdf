@@ -1,7 +1,7 @@
 import { replaceVideosWithLink, createVideosThumbnail } from "./modules/editVideos";
 import {setupTableElementsForPrint, 
   openAllCollapsablesAndTabs} from "./modules/editBootstrapElements";
-import cleanIOCBookOrChapter from "./modules/editDetailsPages";
+import cleanIOCStructures from "./modules/editIOCStructures";
 import { editBody, editHeaders} from "./modules/editCommonElements";
 import applyUserChangesToSelectors from "./modules/applyUserChanges";
 import { nonEditableOptions } from "../fileuploader/optionsList/optionsState";
@@ -12,7 +12,7 @@ print it as a pdf document is displayed.
 */
 
 export async function editHTML(htmlElement, options) {
-  
+
     //Increase body and headers base or total font
     if (options.bodyFontSize === "" || options.bodyFontSize < 0) { options.bodyFontSize = 1;}
     const MIDA_FONT_BASE = options.bodyFontSize + options.selectedFontType;
@@ -44,7 +44,7 @@ export async function editHTML(htmlElement, options) {
       removeNBSP(htmlElement);
     }
 
-    cleanIOCBookOrChapter(htmlElement, options);
+    cleanIOCStructures(htmlElement, options);
 
     //Possible non blocking error if user sets a bad selector (doesnt exist or is a weird string)
     const selectorErrors = applyUserChangesToSelectors(htmlElement, options.userEdits);

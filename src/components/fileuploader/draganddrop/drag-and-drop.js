@@ -65,15 +65,15 @@ const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
     }
   };
 
-  let dragOverlayClass = dragOverlay ? "border-blue-800 bg-grey-500 text-slate-400" : 
-        "rgb(206, 206, 206) text-slate-500";
+  let dragOverlayClass = dragOverlay ? "border-blue-800 text-slate-400" : 
+        "border-gray-300 text-slate-500";
   if (error !== "") { dragOverlay = "border-red-800 text-red-400"; }
   return (
     <div className="mx-auto w-full text-center">
       {error !== "" && <p className={`text-red-800 md:mt-5 mt-3
        md:font-bold md:text-lg text-baseline`}>{error}</p>}
       <div
-        className={`h-full xl:w-1/2 md:5/6 w-11/12 my-5 py-12 mx-auto  ${dragOverlayClass}`}
+        className={`h-full xl:w-7/12 md:5/6 w-11/12 my-5 py-12 mx-auto  ${dragOverlayClass}`}
         style={{borderWidth: "3px", borderStyle: "dashed"}}
         onDragEnter={handleDragIn}
         onDragLeave={handleDragOut}

@@ -54,7 +54,7 @@ const KeyValueAssign = ({ valueArray, setValueArray, options={} }) => {
 
     return (
         <div className="md:overflow-x-hidden overflow-x-scroll">
-            <div className="text-center font-bold mb-3 mt-5">
+            <div className="text-center font-bold mb-3 mt-2">
                 Modifica elements concrets al document (avançat)
             </div>
         {totalRows.length > 0 && <div className="flex flex-col">
@@ -62,30 +62,30 @@ const KeyValueAssign = ({ valueArray, setValueArray, options={} }) => {
                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                     <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                         <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
+                            <thead className="bg-gray-100 border-red-500">
                                 <tr>
                                     <th scope="col" 
-                                        className="text-center py-2 text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">
+                                        className="text-center py-2 text-xs text-gray-500 uppercase align-middle">
                                         .classe o #id
                                     </th>
                                     <th scope="col" 
-                                        className="py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">
+                                        className="py-2 text-center text-xs text-gray-500 uppercase align-middle">
                                         mida font (px)
                                     </th>
                                     <th scope="col" 
-                                        className="py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">
+                                        className="py-2 text-center text-xs text-gray-500 uppercase align-middle">
                                         mida marge vert (px)
                                     </th>
                                     <th scope="col" 
-                                        className="py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">
+                                        className="py-2 text-center text-xs text-gray-500 uppercase align-middle">
                                         mida horitz (px)
                                     </th>
                                     <th scope="col" 
-                                        className="py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">
+                                        className="py-2 text-center text-xs text-gray-500 uppercase align-middle">
                                         color fons (hex)
                                     </th>
                                     <th scope="col" 
-                                        className="py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">
+                                        className="py-2 text-center text-xs text-gray-500 uppercase align-middle">
                                         Elimina
                                     </th>
                                 </tr>

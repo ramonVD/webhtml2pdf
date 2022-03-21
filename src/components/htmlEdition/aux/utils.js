@@ -70,3 +70,18 @@ export function FindByStyleAttr(htmlElement, attribute) {
 export function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
+
+
+  
+/*Eliminates children elements of the parent node until an element
+with the desired class has been found. Careful with this.*/
+export function eliminateChildrenUntilFindClass(parentNode, className) {
+  if (!elementExists(parentNode)) { return; }
+  const children = parentNode.children;
+  for (let childElement of Array.from(children)) {
+    if (childElement.classList.contains(className)) {
+      break;
+    }
+    childElement.remove();
+  }
+}

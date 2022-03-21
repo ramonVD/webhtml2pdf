@@ -1,6 +1,6 @@
 /*File uploader with drag and drop adapted from:
  https://codesandbox.io/s/github/dineshselvantdm/drag-drop-file-upload-react-hooks?file=/utils/drag-drop.js*/
-import React, { useState} from "react";
+import React, { useState } from "react";
 import DragAndDrop from "./draganddrop/drag-and-drop";
 import { createCleanHTMLElement, NonEmptyHTMLString } from "../htmlEdition/parseHTMLFiles";
 import editHTML from "../htmlEdition/mainHTMLEdition";
@@ -63,7 +63,7 @@ const FileUploader = () => {
   }
 
   const [loaderState, setLoaderState] = useState(FILE_UPLOADER_STATE.INIT);
-
+  
   const processDrop = async HTMLString => {
     setLoaderState(FILE_UPLOADER_STATE.PROCESSING);
     /*Validate that its a real html file*/
@@ -83,7 +83,7 @@ const FileUploader = () => {
       <Optionsbox optionsProps={{...optionsValues, ...optionsSetters}} />
       <div className="flex">
         <DragAndDrop processDrop={processDrop} config={UPLOADED_FILE_SETTINGS}
-                      handleUploadChange={setLoaderState}>
+                      handleUploadChange={setLoaderState} >
           {FILE_UPLOADER_STATE_JSX[loaderState]}
         </DragAndDrop>
       </div>
