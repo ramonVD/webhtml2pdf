@@ -14,8 +14,7 @@ const getFromStorage = (itemName) => {
 
 export const getFromStorageIfExists = (itemName) => {
     //Just doesnt return null
-    const result = getStorage().getItem(itemName);
-    if (result !== null) {
+    if (existsInStorage(itemName)) {
         return getFromStorage(itemName);
     }
     return undefined;

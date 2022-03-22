@@ -1,14 +1,11 @@
-/*Functions to parse the uploaded document, check that its valid html,
-then sanitize it.*/
 import DOMPurify from "dompurify";
 
-/*Possibilty, however last one can change/what about if someone loads external ones
-on his document?
-const WHITELISTED_LINK_URLS = [
-    "https://ioc.xtec.cat/", "https://fonts.googleapis.com/", "https://fonts.gstatic.com/",
-    "https://lucid-williams-21763e.netlify.app/"
-];
-*/
+/*Functions to parse the uploaded document, check that its valid html,
+then sanitize it.*/
+
+/*Setting a whitelist of loaded links is a possibilty,
+however last one can change/what about if someone loads external ones
+on his document?*/
 
 /*Function to clean an html string of scripts and return a valid html element*/
 export const createCleanHTMLElement = (htmlString) => {
@@ -34,12 +31,12 @@ export const createCleanHTMLElement = (htmlString) => {
     return htmlElement;
 }
 
-/* Check that the string is not empty.*/
-export const NonEmptyHTMLString = (string) => {
+/* Check that the string is not undefined or empty.*/
+export const isValidNonEmptyString = (string) => {
     if (string === null || string === undefined || string === "") {
-        return "";
+        return false;
     }
-    return string;
+    return true;
 }
 
 

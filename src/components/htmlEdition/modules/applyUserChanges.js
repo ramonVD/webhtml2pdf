@@ -1,4 +1,4 @@
-import { elementExists, isNumber } from "../aux/utils";
+import { isNumber, getWidthValue } from "../aux/utils";
 
 /*Name of the real css properties that are changed, relative to their name in
 the keyValueAssign dict*/
@@ -31,30 +31,35 @@ export function applyUserChangesToSelectors(htmlElement, arrayOfSelectorValuesDi
 
                 if (els.length > 0) {
                     els.forEach( el => {
-                        if (elementExists(el)) {
-                            /*Note: this makes you have to assign an explicit value of 
-                            0 to a property of an element to make it 0.
-                            The alternative is adding an element, then forgetting to set
-                            the value and it being 0 by default...*/
-                            for (const property of Object.keys(modifiedCSSProperties)) {
-                                let propertyValue = "";
-                                const propertyCSSName = modifiedCSSProperties[property];
-                                if (selVal.hasOwnProperty(property) && selVal[property] !== "") {
-                                    if (selVal[property].charAt(0) === "#") {
-                                        //sanitize hypothetical hex value, no need to add zeroes or Fs
-                                        //to the right, css does that automatically apparently?
-                                        const NonHexPattern = /[^0-9a-fA-F#]/g;
-                                        propertyValue = NonHexPattern.test(selVal[property]) ? "" : selVal[property];
-                                    } else {                           
-                                    /*Sanitize in case its not a number...*/
-                                    /*Maybe implement maximum/minimum values for specific properties (
-                                        f.ex: dont let them set font-size +200 or itll bork the page) */
-                                        propertyValue = isNumber(selVal[property]) ? selVal[property] + "px": "";
-                                    }
+                        /*Note: this makes you have to assign an explicit value of 
+                        0 to a property of an element to make it 0.
+                        The alternative is adding an element, then forgetting to set
+                        the value and it being 0 by default...*/
+                        for (const property of Object.keys(modifiedCSSProperties)) {
+                            let propertyValue = "";
+                            const propertyCSSName = modifiedCSSProperties[property];
+                            if (selVal.hasOwnProperty(property) && selVal[property] !== "") {
+                                if (selVal[property].charAt(0) === "#") {
+                                    //sanitize hypothetical hex value, no need to add zeroes or Fs
+                                    //to the right, css does that automatically apparently?
+                                    const NonHexPattern = /[^0-9a-fA-F#]/g;
+                                    propertyValue = NonHexPattern.test(selVal[property]) ? "" : selVal[property];
+                                } else {                           
+                                /*Sanitize in case its not a number...*/
+                                /*Maybe implement maximum/minimum values for specific properties (
+                                    f.ex: dont let them set font-size +200 or itll bork the page) */
+                                    propertyValue = isNumber(selVal[property]) ? selVal[property] + "px": "";
                                 }
-                                if (propertyValue !== ""){
-                                    el.style.setProperty(propertyCSSName, propertyValue, "important")
+                            }
+                            if (propertyValue !== ""){
+                                //Width value is added to the element's actual width
+                                if (propertyCSSName === "width") {
+                                    const origElValue = parseInt(getWidthValue(el));
+                                    /*Not setting 0 as minimum value makes elements reverts to their "default"
+                                    width if set like this (probably just reads it as invalid???)*/
+                                    propertyValue = Math.max(0, origElValue + parseInt(selVal[property])) + "px";
                                 }
+                                el.style.setProperty(propertyCSSName, propertyValue, "important")
                             }
                         }
                     });

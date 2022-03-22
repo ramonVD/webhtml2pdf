@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { fileValidator, preventBrowserDefaults } from "./draganddroputils";
-import ContentFrame from "../../contentframe/contentFrame";
+import ContentFrame from "../contentframe/contentFrame";
 
 /*Drag & drop box with associated events, also adapted (check fileuploader)*/
 const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {

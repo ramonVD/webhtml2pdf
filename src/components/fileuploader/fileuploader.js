@@ -2,7 +2,7 @@
  https://codesandbox.io/s/github/dineshselvantdm/drag-drop-file-upload-react-hooks?file=/utils/drag-drop.js*/
 import React, { useState } from "react";
 import DragAndDrop from "./draganddrop/drag-and-drop";
-import { createCleanHTMLElement, NonEmptyHTMLString } from "../htmlEdition/parseHTMLFiles";
+import { createCleanHTMLElement, isValidNonEmptyString } from "../htmlEdition/parseHTMLFiles";
 import editHTML from "../htmlEdition/mainHTMLEdition";
 import Optionsbox from "./optionsList/optionsbox";
 import { FILE_UPLOADER_STATE, FILE_UPLOADER_STATE_JSX, 
@@ -20,7 +20,7 @@ Technically, the file's contents will be cleaned and edited first, then drawn on
 and displayed for the user to be printed as a pdf.*/
 
 const FileUploader = () => {
-  /*Isnt there a better way... than send all these as props?
+  /*Isnt there a better way... than generating so many hooks...?
   Sometimes I miss getState();*/
 
   const options = getUserOptionsState();
@@ -33,8 +33,6 @@ const FileUploader = () => {
   const [removeDetails, setRemoveDetails] = useState(options.removeDetails);
   const [removeIndex, setRemoveIndex] = useState(options.removeIndex);
   const [addTitlePage, setAddTitlePage] = useState(options.addTitlePage);
-  /*Set a default initial state here to fix the problems that arise
-   if this element exists in the document (and we're using default values)*/
   const [userEdits, setUserEdits] = useState(copyUserEdits(options.userEdits));
   const [noNbsp, setNoNbsp] = useState(options.noNbsp);
 
@@ -66,13 +64,14 @@ const FileUploader = () => {
   
   const processDrop = async HTMLString => {
     setLoaderState(FILE_UPLOADER_STATE.PROCESSING);
-    /*Validate that its a real html file*/
-    const nonEmptyHTML = NonEmptyHTMLString(HTMLString);
+    /*Validate that its a non empty, not undefined string*/
+    const nonEmptyHTML = (isValidNonEmptyString(HTMLString)) ? HTMLString : "";
     if (nonEmptyHTML === "") { return; }
-    /*Stringify it, use it to create an html element*/
+    /*Use it to create an html element*/
     const cleanHtmlElement = createCleanHTMLElement(nonEmptyHTML);
     /*Apply changes to the html element*/
     return await editHTML(cleanHtmlElement, optionsValues);
+    
     /* As of now, we send the edited html to an iframe and
     print it in the browser window. Before, we used a library
     to convert html to pdf but they have proven to be spotty.*/
