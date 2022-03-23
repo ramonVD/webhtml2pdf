@@ -4,7 +4,8 @@ import InfoModal from './components/infoModal/infoModal';
 import modalJSX from './components/infoModal/modalTextJSX';
 
 /*TO-DO: 
--Extendre la "neteja" a pagines simples de l'IOC, no només de llibres.
+- Determinar si els qüestionaris poden netejar-se també de manera segura,
+per cursos on la majoria d'informació es troba als qüestionaris.
 */
 
 function App() {

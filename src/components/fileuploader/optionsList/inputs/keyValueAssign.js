@@ -37,7 +37,7 @@ const KeyValueAssign = ({ valueArray, setValueArray, options={} }) => {
                         key={"mt"+index} pos={index} type="marginTopValue" setData={setValueArray} />
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/6">
-                    <KVInput text={widthValue} oldState={stateArray}  returnType="uint"
+                    <KVInput text={widthValue} oldState={stateArray}  returnType="int"
                         key={"w"+index} pos={index} type="widthValue" setData={setValueArray} />
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap text-xs text-gray-500 align-middle w-1/6">
@@ -78,7 +78,7 @@ const KeyValueAssign = ({ valueArray, setValueArray, options={} }) => {
                                     </th>
                                     <th scope="col" 
                                         className="py-2 text-center text-xs text-gray-500 uppercase align-middle">
-                                        mida horitz (px)
+                                        varia width (px)
                                     </th>
                                     <th scope="col" 
                                         className="py-2 text-center text-xs text-gray-500 uppercase align-middle">

@@ -32,6 +32,7 @@ export function setKVDictState(oldState, action, payload) {
             const dict = state[payload.pos];
             const affectedKey =  payload.type;
             const returnType = payload.returnType;
+            
             if (affectedKey === "selector") {
                 dict["htmlSelector"] = payload.newValue;
             } else {
