@@ -3,6 +3,10 @@ import FileUploader from './components/fileuploader/fileuploader';
 import InfoModal from './components/infoModal/infoModal';
 import modalJSX from './components/infoModal/modalTextJSX';
 
+/*TO-DO: 
+-Extendre la "neteja" a pagines simples de l'IOC, no només de llibres.
+*/
+
 function App() {
 
   return (

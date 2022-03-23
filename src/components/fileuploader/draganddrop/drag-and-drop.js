@@ -2,10 +2,11 @@ import React, { useState, useRef } from "react";
 import { fileValidator, preventBrowserDefaults } from "./draganddroputils";
 import ContentFrame from "../../contentframe/contentFrame";
 
+/*Drag & drop box with associated events, also adapted (check fileuploader)*/
 const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
   let [dragOverlay, setDragOverlay] = useState(false);
   const [data, setData] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   let dragCounter = useRef(0);
   const clickInputRef = useRef(null);
 
@@ -33,7 +34,7 @@ const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
     if (!files) { return; }
     preventBrowserDefaults(e);
     setDragOverlay(false);
-    setError(false);
+    setError("");
     dragCounter.current = 0;
     const { isValidFile, errVal } = fileValidator(files, config);
     if (!isValidFile) {
@@ -47,7 +48,7 @@ const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
 
   const handleSelectFile = (e)=> {
       const file = [e.target.files[0]];
-      setError(false);
+      setError("");
       fileReader(file);
   }
 
@@ -55,19 +56,25 @@ const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
     setData("");
     const reader = new FileReader();
     reader.readAsText(files[0]);
-    reader.onload = loadEvt => {
-      setData(processDrop(loadEvt.target.result).innerHTML);
-    };
+    reader.onload = async loadEvt => {
+      const finalHTML = await processDrop(loadEvt.target.result);
+      if (finalHTML["errorsData"] !== "") {
+          setError(finalHTML["errorsData"]);
+      }
+      setData(finalHTML["html"].innerHTML);
+    }
   };
 
-  const dragOverlayClass = dragOverlay ? "border-red-800 bg-grey-500" : "";
-  
+  let dragOverlayClass = dragOverlay ? "border-blue-800 text-slate-400" : 
+        "border-gray-300 text-slate-500";
+  if (error !== "") { dragOverlay = "border-red-800 text-red-400"; }
   return (
-    <div className="mx-auto w-full">
-      {error && <p className="text-red-800">{error}</p>}
+    <div className="mx-auto w-full text-center">
+      {error !== "" && <p className={`text-red-800 md:mt-5 mt-3
+       md:font-bold md:text-lg text-baseline`}>{error}</p>}
       <div
-        className={`h-full xl:w-1/2 md:5/6 w-11/12 my-5 py-12 mx-auto text-slate-600 ${dragOverlayClass}`}
-        style={{border: "dashed rgb(206, 206, 206) 3px"}}
+        className={`h-full xl:w-7/12 md:5/6 w-11/12 my-5 py-12 mx-auto  ${dragOverlayClass}`}
+        style={{borderWidth: "3px", borderStyle: "dashed"}}
         onDragEnter={handleDragIn}
         onDragLeave={handleDragOut}
         onDragOver={handleDrag}
@@ -81,6 +88,7 @@ const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={(e) => {
             setData("");
+            setError("");
             clickInputRef.current.value = null;
             handleUploadChange("INIT");
             e.preventDefault();
@@ -90,15 +98,19 @@ const DragAndDrop = ({ processDrop, children, config, handleUploadChange }) => {
         </div>
       </div>
       <div className="text-center">
-        <label htmlFor="fileAccept" className="mb-5 text-center">També pots prémer aquí -&nbsp;</label>
+        <label htmlFor="fileAccept" className="mb-5 text-center">
+          També pots prémer aquí -&nbsp;
+        </label>
         <input type="file" name="fileAccept" 
           accept=".html" multiple={false} ref={clickInputRef}
           onChange={handleSelectFile} className="mb-5"/>
           
         <ContentFrame iframeContent={data} 
-        handleUploadChange={handleUploadChange} /> 
+        handleUploadChange={handleUploadChange} errorState={error} /> 
       </div>
-      <div className="text-sm text-slate-300 mt-5 text-center">Made by Ramon Vicente, 2022</div>
+      <div className="text-sm text-slate-300 mt-5 text-center">
+        Made by Ramon Vicente, 2022
+      </div>
     </div>
   );
 };

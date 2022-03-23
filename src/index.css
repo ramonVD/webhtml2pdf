@@ -15,3 +15,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/*Not working because we're drowning in flex elements, but at least
+it may help some?*/
+@media print {
+  img, table {
+      page-break-before: auto;
+      page-break-after: auto; 
+      page-break-inside: avoid;
+      -webkit-print-color-adjust: exact;
+  }
+
+}

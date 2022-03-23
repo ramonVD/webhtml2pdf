@@ -1,3 +1,4 @@
+/*Small animation for the modal*/
 @keyframes appear {
  0% {
     opacity: 0%;
@@ -7,6 +8,6 @@
  }
 }
 
-  .appearModal {
-      animation: appear 500ms 1;
-  }
+.appearModal {
+    animation: appear 500ms 1;
+}
