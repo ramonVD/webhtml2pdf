@@ -14,6 +14,7 @@ export const isAnArray = (element) => element.constructor === Array
 export function elementExists(element) {
   return (element !== null && element !== undefined);
 }
+
 /*Return all src strings for an array of videos, or a single src
 string if its a single element.*/
 export function getVideoSrc(videoElements) {
@@ -51,7 +52,7 @@ export function removeIfExists(htmlElement) {
   }
 }
 
-
+/*Find elements if they have a concrete attribute in their styles*/
 export function FindByStyleAttr(htmlElement, attribute) {
   var All = htmlElement.getElementsByTagName("*");
   const foundElements = [];
@@ -96,7 +97,7 @@ export function getWidthValue(element) {
   if (stylesMatch) {
     result = stylesMatch[2];
   } else {
-    const attrMatch = (element.getAttribute("width") === null) ? false : element.getAttribute("width").match(/(\d+px$|\d+$)/);
+    const attrMatch = (element.getAttribute("width") === null) ? false : element.getAttribute("width").match(/((\d+)px$|(\d+$))/);
     if (attrMatch) {
       result = attrMatch[1];
     } else {

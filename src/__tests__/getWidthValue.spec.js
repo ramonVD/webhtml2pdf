@@ -14,14 +14,17 @@ describe("Get attribute value", () => {
                 <img src="5" id="5" style="width:60vw;" />
                 <img src="5" id="5" style="width:35em;" />
                 <img src="6" id="6" style="width: fit-content" />
-                <img src="7" id="7" style="width: auto; max-width:100vw;" />
+                <img src="7" id="7" width="auto" />
+                <img src="8" id="8" width="75em" />
+                <img src="9" id="9" width="badInput" />
+                <img src="10" id="10" style="width: inherit" />
             </body>
         </html>`);
         const results = Array.from(input.querySelectorAll("img")).map( el => {
             return getWidthValue(el, "width");
         });
 
-        const desiredOutput = ["0", "12", "12", "0", "0", "0", "0", "0"];
+        const desiredOutput = ["0", "12", "12", "0", "0", "0", "0", "0", "0", "0", "0"];
 
         expect(results).toEqual(desiredOutput);
 
