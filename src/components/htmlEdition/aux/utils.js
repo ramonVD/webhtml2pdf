@@ -85,3 +85,24 @@ export function eliminateChildrenUntilFindClass(parentNode, className) {
     childElement.remove();
   }
 }
+
+
+/*Returns the actual value of a DOM element's width in pixels as a string.
+The value is taken from the a defined attribute in its outer HTML,
+from the styles or just getting its width from its bounds.*/
+export function getWidthValue(element) {
+  let result;
+  const stylesMatch = element.style.width.match(/((\d+)px$|(\d+$))/);
+  if (stylesMatch) {
+    result = stylesMatch[2];
+  } else {
+    const attrMatch = (element.getAttribute("width") === null) ? false : element.getAttribute("width").match(/(\d+px$|\d+$)/);
+    if (attrMatch) {
+      result = attrMatch[1];
+    } else {
+      //fallback, may need to use getBoundingClientRect...
+      result = element.offsetWidth;
+    }
+  }
+  return result.toString();
+}

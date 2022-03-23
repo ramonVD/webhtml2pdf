@@ -41,7 +41,6 @@ export const getAHexNumber = (text) => {
     return text.replace(/[^#0-9A-F]/, "");
 }
 
-
 /*Removes more than one symbol in a string, just leaves the first one 
 from left to right. Can be probably done more easily
 with a replace and a custom function inside 

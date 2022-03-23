@@ -1,11 +1,13 @@
 import { removeIfExists, elementExists, 
   eliminateChildrenUntilFindClass } from "../aux/utils";
 
+/*Note: By empirical, I mean that the function uses current default classes
+or attributes that exist in the current DOM used in IOC Campus' documents
+(as of march 2022). If it changes, they will probably need changing too*/
+
 /*Check if the element is a IOC book/chapter/page, then apply some cleaning
 to its elements depending on the existing selected options.*/
 export function cleanIOCStructures(htmlElement, options={}) {
-  console.log(htmlElement.innerHTML);
-
   let text = "";
   if (isIOCBook(htmlElement)) {
     if (options.removeDetails) {
