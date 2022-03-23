@@ -10,18 +10,18 @@ const modifiedCSSProperties = {
 };
 
 /* Changes the specified property of the specified element in the DOM of htmlElement.
-    It comes as an array of dicts from keyValueAssign.js (KV_DEFAULT_DICT),
-    that, for a specific querySelector, specify some properties value. 
+    Input is as an array of dicts from keyValueAssign.js (KV_DEFAULT_DICT),
+    that, for a specific querySelector, specify some properties values. 
 
-    It applies the changes to every selector and if a single selector is erroneus
-    it'll return true;
+    It applies these attribute value change to every selector and it'll return
+    an array with true/false (if there was an error) for every selector checked.
 */
 export function applyUserChangesToSelectors(htmlElement, arrayOfSelectorValuesDicts) {
     const selectorErrors = arrayOfSelectorValuesDicts.map( selVal => {
         if (selVal.hasOwnProperty("htmlSelector")) {
             if (selVal.htmlSelector !== "") {
                 /*No need to sanitize queryselector queries (except check if it found something)
-                that I have found. Just check if it return an exception and set a message*/
+                that I have found. Just check if it returns an exception and set a message*/
                 let els;
                 try {
                     els = Array.from(htmlElement.querySelectorAll(selVal.htmlSelector));
