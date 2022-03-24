@@ -39,7 +39,7 @@ export function applyUserChangesToSelectors(htmlElement, arrayOfSelectorValuesDi
                             let propertyValue = "";
                             const propertyCSSName = modifiedCSSProperties[property];
                             if (selVal.hasOwnProperty(property) && selVal[property] !== "") {
-                                if (selVal[property].charAt(0) === "#") {
+                                if (selVal[property].charAt(0) === "#" && selVal[property] !== "#") {
                                     //sanitize hypothetical hex value, no need to add zeroes or Fs
                                     //to the right, css does that automatically apparently?
                                     const NonHexPattern = /[^0-9a-fA-F#]/g;
