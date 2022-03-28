@@ -30,22 +30,6 @@ export function cleanIOCStructures(htmlElement, options={}) {
   }
 }
 
-/*Empirical function to eliminate the Contents table from the DOM in a
-ioc moodle book*/
-function eliminateIndexTable(htmlElement) {
-  const indexTable = getIndexTable(htmlElement);
-  removeIfExists(indexTable);
-}
-
-/*Moodle has some default names for its index table, maybe some more even?
-  They can be found in the css files for print.css for example, should
-  check that all of them are included...*/
-const getIndexTable = (htmlElement) => {
-  const indexClasses = `.book_toc_ordered, .book_toc_numbered,
-  .book_toc_indented, .book_toc_bullets`;
-  return htmlElement.querySelector(indexClasses);
-}
-
 /*Empirical function based on the default structure of a moodle book in
 the IOC campus. Removes the page with details of the book (title, name of 
 the book, date of download...)*/
@@ -152,6 +136,25 @@ function eliminateExtraDetails(htmlElement) {
   }
 }
 
+
+/*Moodle has some default names for its index table, maybe some more even?
+They can be found in the css files for print.css for example, should
+check that all of them are included...*/
+const getIndexTable = (htmlElement) => {
+  const indexClasses = `.book_toc_ordered, .book_toc_numbered,
+  .book_toc_indented, .book_toc_bullets, .book_toc_none`;
+  return htmlElement.querySelector(indexClasses);
+}
+
+
+/*Empirical function to eliminate the Contents table from the DOM in a
+ioc moodle book*/
+function eliminateIndexTable(htmlElement) {
+  const indexTable = getIndexTable(htmlElement);
+  removeIfExists(indexTable);
+}
+
+
 /*Fixes the links of the index page, for now it removes their links
 and the underlines to make them not seem links.
 NOTE: I've tried making them pdf anchors multiple times, 
@@ -160,13 +163,17 @@ Also, the commented part sets the link to the current course page,
 but since they change every three months this is probably not wanted...*/
 export function fixIndexLinks(htmlElement) {
   const index = getIndexTable(htmlElement);
+  const indexListElements = Array.from(index.querySelectorAll("ul > li"));
   const bookLinks = index !== undefined ? Array.from(index.querySelectorAll("a")).filter( el => el.href !== "" ) : [];
   if (bookLinks.length > 0) { 
+    indexListElements.forEach( subLi => {
+      //Fixes styles of subTitles
+      subLi.style.setProperty("list-style", "none", "important");
+    })
     bookLinks.filter( el => { 
-      //Workaround, without it in chrome it sets up a valid link to the base url of the window
-      //https://stackoverflow.com/questions/5637969/is-an-empty-href-valid
-      // eslint-disable-next-line no-script-url
-      el.href = `javascript:void(0);`;
+      el.removeAttribute("href");
+      //Simulate its style with href
+      el.style.color = "#2a84f9";
       el.style.textDecoration = "none"; 
       return false;
     });
