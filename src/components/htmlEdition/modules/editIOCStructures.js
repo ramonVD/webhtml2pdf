@@ -142,7 +142,7 @@ They can be found in the css files for print.css for example, should
 check that all of them are included...*/
 const getIndexTable = (htmlElement) => {
   const indexClasses = `.book_toc_ordered, .book_toc_numbered,
-  .book_toc_indented, .book_toc_bullets, .book_toc_none `;
+  .book_toc_indented, .book_toc_bullets, .book_toc_none`;
   return htmlElement.querySelector(indexClasses);
 }
 
@@ -163,8 +163,13 @@ Also, the commented part sets the link to the current course page,
 but since they change every three months this is probably not wanted...*/
 export function fixIndexLinks(htmlElement) {
   const index = getIndexTable(htmlElement);
+  const indexListElements = Array.from(index.querySelectorAll("ul > li"));
   const bookLinks = index !== undefined ? Array.from(index.querySelectorAll("a")).filter( el => el.href !== "" ) : [];
   if (bookLinks.length > 0) { 
+    indexListElements.forEach( subLi => {
+      //Fixes styles of subTitles
+      subLi.style.setProperty("list-style", "none", "important");
+    })
     bookLinks.filter( el => { 
       el.removeAttribute("href");
       //Simulate its style with href

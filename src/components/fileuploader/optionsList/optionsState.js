@@ -40,7 +40,7 @@ const defaultUserOptions = {
     },
     {
         htmlSelector: ".Wirisformula", fontValue: "",
-        marginTopValue: "", widthValue: "6",
+        marginTopValue: "", widthValue: "5",
         bgColorValue:""
     }],
   }
