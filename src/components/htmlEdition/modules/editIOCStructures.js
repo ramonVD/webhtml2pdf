@@ -16,8 +16,10 @@ export function cleanIOCStructures(htmlElement, options={}) {
       eliminateExtraDetails(htmlElement);
     }
     if (options.removeIndex) {
-      eliminateContentsTable(htmlElement);
-    } 
+      eliminateIndexTable(htmlElement);
+    } else {
+      fixIndexLinks(htmlElement);
+    }
     if (options.addTitlePage && options.removeDetails) {
       createMainTitlePage(htmlElement, text);
     }
@@ -28,15 +30,6 @@ export function cleanIOCStructures(htmlElement, options={}) {
   }
 }
 
-/*Empirical function to eliminate the Contents table from the DOM in a
-ioc moodle book*/
-function eliminateContentsTable(htmlElement) {
-  const indexClasses = `.book_toc_ordered, .book_toc_numbered,
-   .book_toc_indented, .book_toc_bullets`;
-  const contentsTable = htmlElement.querySelector(indexClasses);
-  removeIfExists(contentsTable);
-}
-  
 /*Empirical function based on the default structure of a moodle book in
 the IOC campus. Removes the page with details of the book (title, name of 
 the book, date of download...)*/
@@ -142,5 +135,68 @@ function eliminateExtraDetails(htmlElement) {
     tableDetails.deleteRow(-1);
   }
 }
+
+
+/*Moodle has some default names for its index table, maybe some more even?
+They can be found in the css files for print.css for example, should
+check that all of them are included...*/
+const getIndexTable = (htmlElement) => {
+  const indexClasses = `.book_toc_ordered, .book_toc_numbered,
+  .book_toc_indented, .book_toc_bullets, .book_toc_none`;
+  return htmlElement.querySelector(indexClasses);
+}
+
+
+/*Empirical function to eliminate the Contents table from the DOM in a
+ioc moodle book*/
+function eliminateIndexTable(htmlElement) {
+  const indexTable = getIndexTable(htmlElement);
+  removeIfExists(indexTable);
+}
+
+
+/*Fixes the links of the index page, for now it removes their links
+and the underlines to make them not seem links.
+NOTE: I've tried making them pdf anchors multiple times, 
+couldnt make it work.
+Also, the commented part sets the link to the current course page,
+but since they change every three months this is probably not wanted...*/
+export function fixIndexLinks(htmlElement) {
+  const index = getIndexTable(htmlElement);
+  const indexListElements = Array.from(index.querySelectorAll("ul > li"));
+  const bookLinks = index !== undefined ? Array.from(index.querySelectorAll("a")).filter( el => el.href !== "" ) : [];
+  if (bookLinks.length > 0) { 
+    indexListElements.forEach( subLi => {
+      //Fixes styles of subTitles
+      subLi.style.setProperty("list-style", "none", "important");
+    })
+    bookLinks.filter( el => { 
+      el.removeAttribute("href");
+      //Simulate its style with href
+      el.style.color = "#2a84f9";
+      el.style.textDecoration = "none"; 
+      return false;
+    });
+  }
+
+  /*const bodyClasses = Array.from(htmlElement.getElementsByTagName("body")[0].classList).filter( el => el.match(/cmid-(\d+)/));
+  const bookRootLink = bodyClasses.length > 0 ? bodyClasses[0].match(/\d+/)[0] : undefined;
+  const index = getIndexTable(htmlElement);
+  const bookLinks = index !== undefined ? Array.from(index.querySelectorAll("a")).filter( el => el.href !== "" ) : [];
+  if (bookLinks.length > 0) {
+    let chapterNum;
+    for (const a of bookLinks) {
+      chapterNum = a.href.match(/\d+$/);
+      if (chapterNum[0] && bookRootLink) {
+        a.href = getBookIndex(bookRootLink, chapterNum);
+      }
+    }
+  }*/
+}
+
+/*Unused function to get the url of a specific book/chapter in the campus
+const getBookIndex = (bookId, chapterNum) => {
+  return `https://ioc.xtec.cat/campus/mod/book/view.php?id=${bookId}&chapterid=${chapterNum}`;
+}*/
 
 export default cleanIOCStructures;

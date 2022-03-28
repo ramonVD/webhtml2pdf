@@ -37,6 +37,11 @@ const defaultUserOptions = {
         htmlSelector: ".exemple", fontValue: "20",
         marginTopValue: "", widthValue: "",
         bgColorValue:""
+    },
+    {
+        htmlSelector: ".Wirisformula", fontValue: "",
+        marginTopValue: "", widthValue: "5",
+        bgColorValue:""
     }],
   }
 
