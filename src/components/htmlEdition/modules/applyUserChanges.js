@@ -55,8 +55,8 @@ export function applyUserChangesToSelectors(htmlElement, arrayOfSelectorValuesDi
                                 //Width value is added to the element's actual width
                                 if (propertyCSSName === "width") {
                                     const origElValue = parseInt(getWidthValue(el));
-                                    /*Not setting 0 as minimum value makes elements reverts to their "default"
-                                    width if set like this (probably just reads it as invalid???)*/
+                                    /*Not setting 0 as minimum value makes elements revert to their "default"
+                                    width if doing this (probably just reads it as invalid???)*/
                                     propertyValue = Math.max(0, origElValue + parseInt(selVal[property])) + "px";
                                 }
                                 el.style.setProperty(propertyCSSName, propertyValue, "important")

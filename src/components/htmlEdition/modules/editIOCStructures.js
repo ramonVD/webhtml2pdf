@@ -1,5 +1,4 @@
-import { removeIfExists, elementExists, 
-  eliminateChildrenUntilFindClass } from "../aux/utils";
+import * as ioc from "../aux/IOCElements";
 
 /*Note: By empirical, I mean that the function uses current default classes
 or attributes that exist in the current DOM used in IOC Campus' documents
@@ -9,43 +8,27 @@ or attributes that exist in the current DOM used in IOC Campus' documents
 to its elements depending on the existing selected options.*/
 export function cleanIOCStructures(htmlElement, options={}) {
   let text = "";
-  if (isIOCBook(htmlElement)) {
+  if (ioc.isIOCBook(htmlElement)) {
     if (options.removeDetails) {
-      text = eliminateAllDetails(htmlElement);
+      text = ioc.eliminateAllDetails(htmlElement);
     } else {
-      eliminateExtraDetails(htmlElement);
+      ioc.eliminateExtraDetails(htmlElement);
     }
     if (options.removeIndex) {
-      eliminateIndexTable(htmlElement);
+      ioc.eliminateIndexTable(htmlElement);
     } else {
       fixIndexLinks(htmlElement);
     }
     if (options.addTitlePage && options.removeDetails) {
       createMainTitlePage(htmlElement, text);
     }
-  } else if (isIOCChapter(htmlElement, options)) {
+  } else if (ioc.isIOCChapter(htmlElement, options)) {
     cleanIOCChapter(htmlElement, options);
-  } else if (isIOCPage(htmlElement)) {
+  } else if (ioc.isIOCPage(htmlElement)) {
     cleanIOCPage(htmlElement);
   }
 }
 
-/*Empirical function based on the default structure of a moodle book in
-the IOC campus. Removes the page with details of the book (title, name of 
-the book, date of download...)*/
-function eliminateAllDetails(htmlElement) {
-  const firstDiv = htmlElement.querySelector("div");
-  if (firstDiv.id !== "page-wrapper") {
-      removeIfExists(firstDiv);
-  }
-  const titleTextElement = htmlElement.querySelector("h1");
-  const titleText = elementExists(titleTextElement) ? titleTextElement.innerText : "";
-  const rootElement = htmlElement.querySelector("[role='main']");
-  eliminateChildrenUntilFindClass( rootElement, "book_info");
-  const indexTableDiv = htmlElement.querySelector(".book_info");
-  removeIfExists(indexTableDiv);
-  return titleText;
-}
   
 /*Function to setup the initial page (that should be empty, so eliminateDetailsPage
   should have been called before (to get the text also)), with a central title.
@@ -102,67 +85,14 @@ function cleanIOCChapter(htmlElement, options) {
   firstTitle.style.fontSize = finalFontSize;
 }
 
-/*Empirical functions to check if there are characteristic (now) classes
-of books, chapters or pages of ioc moodle documents*/
-
-  /*Returns true if its a full ioc moodle book*/
-function isIOCBook(htmlElement) {
-  return htmlElement.querySelector(".book_info") !== null;
-}
-
-/*Returns true if its a single chapter from a ioc moodle book*/
-function isIOCChapter(htmlElement) {
-  return htmlElement.querySelector(".hidden-print") !== null;
-}
-
-/*Returns true if its a ioc page that's been downloaded manually*/
-function isIOCPage(htmlElement) {
-  return htmlElement.querySelector(".ioc-xtec-cat--campus") !== null;
-}
-
-/*Details page still may exist. If it does, remove the two last
-elements of its table, since they show data that should not be shown*/
-function eliminateExtraDetails(htmlElement) {
-  const bookDetailsTable = htmlElement.querySelector(".book_info");
-  let tableDetails;
-  if (elementExists(bookDetailsTable)) { 
-    tableDetails = bookDetailsTable.querySelector("table");
-    bookDetailsTable.classList.add("mb-4");
-    }
-  if (elementExists(tableDetails)) {
-    // Elimina els apartats Imprès per i data
-    tableDetails.deleteRow(-1);
-    tableDetails.deleteRow(-1);
-  }
-}
-
-
-/*Moodle has some default names for its index table, maybe some more even?
-They can be found in the css files for print.css for example, should
-check that all of them are included...*/
-const getIndexTable = (htmlElement) => {
-  const indexClasses = `.book_toc_ordered, .book_toc_numbered,
-  .book_toc_indented, .book_toc_bullets, .book_toc_none`;
-  return htmlElement.querySelector(indexClasses);
-}
-
-
-/*Empirical function to eliminate the Contents table from the DOM in a
-ioc moodle book*/
-function eliminateIndexTable(htmlElement) {
-  const indexTable = getIndexTable(htmlElement);
-  removeIfExists(indexTable);
-}
-
-
 /*Fixes the links of the index page, for now it removes their links
 and the underlines to make them not seem links.
 NOTE: I've tried making them pdf anchors multiple times, 
 couldnt make it work.
 Also, the commented part sets the link to the current course page,
 but since they change every three months this is probably not wanted...*/
-export function fixIndexLinks(htmlElement) {
-  const index = getIndexTable(htmlElement);
+function fixIndexLinks(htmlElement) {
+  const index = ioc.getIndexTable(htmlElement);
   const indexListElements = Array.from(index.querySelectorAll("ul > li"));
   const bookLinks = index !== undefined ? Array.from(index.querySelectorAll("a")).filter( el => el.href !== "" ) : [];
   if (bookLinks.length > 0) { 
@@ -181,7 +111,7 @@ export function fixIndexLinks(htmlElement) {
 
   /*const bodyClasses = Array.from(htmlElement.getElementsByTagName("body")[0].classList).filter( el => el.match(/cmid-(\d+)/));
   const bookRootLink = bodyClasses.length > 0 ? bodyClasses[0].match(/\d+/)[0] : undefined;
-  const index = getIndexTable(htmlElement);
+  const index = ioc.getIndexTable(htmlElement);
   const bookLinks = index !== undefined ? Array.from(index.querySelectorAll("a")).filter( el => el.href !== "" ) : [];
   if (bookLinks.length > 0) {
     let chapterNum;

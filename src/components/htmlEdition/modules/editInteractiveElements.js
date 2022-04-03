@@ -1,37 +1,39 @@
 import { isYoutubeVideo, getYoutubeThumbnailSrc } from "../aux/youtube";
 import { isVimeoVideo, getVimeoThumbnailSrc } from '../aux/vimeo';
-import isH5P from "../aux/H5P";
-import { getVideoSrc } from '../aux/utils';
-/* Functions to edit videos' html, changing their formats, adding thumbnails...
+import { isH5P, isGenially } from "../aux/H5PGenially";
+import { getInteractiveElementSrc } from '../aux/utils';
+/* Functions to edit interactive elements html.
+Depending on the element type it'll do extra stuff (for videos, can add thumbnails...),
+for most just show its link under it.
+
 So far, only need to fetch API info when encountering Vimeo videos.*/
 
 /*Function to replace videos and iframes with videos to a text with a link
 to the video*/
-export function replaceVideosWithLink(htmlElement) {
-    const iframes = findVideos(htmlElement);
-    const arrayIframes = Array.from(iframes);
-    const videoSrcs = getVideoSrc(arrayIframes);
+export function replaceElementsWithLink(htmlElement) {
+    const interactiveElements = findinteractiveElements(htmlElement);
+    const arrayIntElements= Array.from(interactiveElements);
+    const elSrcs = getInteractiveElementSrc(arrayIntElements);
     let newElement;
-    for (let i = 0; i < arrayIframes.length; i++) {
-      newElement = createVideoReplacement(videoSrcs[i]);
-      iframes[i].parentNode.replaceChild(newElement, iframes[i])
+    for (let i = 0; i < arrayIntElements.length; i++) {
+      newElement = createVideoReplacement(elSrcs[i]);
+      elSrcs[i].parentNode.replaceChild(newElement, elSrcs[i])
     }
   }
 
-  /*Function to find all videos in the document. Currently supports the format of my
-  books, probably need to check lots of other use cases*/
-  function findVideos(htmlElement) {
+  /*Function to find all videos, audios and iframes in the document */
+  function findinteractiveElements(htmlElement) {
     return htmlElement.querySelectorAll("iframe, .video-js");
   }
 
   /*Creates a div with a text and a link to the src of a video*/ 
-  const createVideoReplacement = (src) => {
+  const createVideoReplacement = (src, leadingText) => {
     const newDiv = document.createElement('div');
     newDiv.classList.add("py-5");
     // style div
     const p = document.createElement("p");
-    p.innerHTML = isH5P(src) ? "<strong>H5P:</strong>&nbsp;&nbsp;&nbsp;" :
-     "<strong>Vídeo:</strong>&nbsp;&nbsp;&nbsp;";
+    const insertText = leadingText ? leadingText : getLinkType(src);
+    p.innerHTML = `<strong>${insertText}:&nbsp;&nbsp;&nbsp;</strong>`;
     const newLink = document.createElement('a');
     newLink.innerText = (src === "") ? "No trobat" : src;
     newLink.href = (src === "") ?  "#" : src;
@@ -43,42 +45,48 @@ export function replaceVideosWithLink(htmlElement) {
   }
 
 
-/*Function to swap all videos in the page for their thumbnails + the video link under it...*/
-export async function createVideosThumbnail(htmlElement, imgAndLink) {
-  const videos = findVideos(htmlElement);
-  const videoArray = Array.from(videos);
+/*Function to swap all interactive elements in the page 
+for their thumbnails + the video link under it. If possible,
+else just add the link under the element*/
+export async function createInteractiveElementsThumbnail(htmlElement, imgAndLink) {
+  const intElements = findinteractiveElements(htmlElement);
+  const intElArray = Array.from(intElements);
   const possibleVimeos = [];
   const vimeoPromises = [];
-  for (let video of videoArray) {
-    const src = getVideoSrc(video)[0];
+  for (let element of intElArray) {
+    const src = getInteractiveElementSrc(element)[0];
     if (src === undefined || src === "") { return; }
     if (isYoutubeVideo(src)) {
       const thumbnailImgSrc = getYoutubeThumbnailSrc(src);
       if (thumbnailImgSrc !== "") {
-        insertThumbnailForVideo(video, thumbnailImgSrc, src, imgAndLink);
+        insertThumbnailForVideo(element, thumbnailImgSrc, src, imgAndLink);
       }
     }
     else if (isVimeoVideo(src)) {
       /*Call Vimeo's API to get the thumbnail imgs*/
-      possibleVimeos.push({video: video, src: src});
+      possibleVimeos.push({video: element, src: src});
       vimeoPromises.push(Promise.resolve(getVimeoThumbnailSrc(src)));
     } else if (isH5P(src)){
-      /*Maybe insert the h5p iframe contents inside DOM instead (exploity,
-        but its a trusted element (if it had an exploit it wouldnt matter
-        here since the problem would've shown up before)...)*/
       const h5pLink = createVideoReplacement(src);
-      video.parentNode.replaceChild(h5pLink, video)
+      element.parentNode.replaceChild(h5pLink, element)
     } else {
-      //Not a supported video type (yet?) (dailymotion...?)
+      /*Not a supported video type. It can be, so far:
+      audio element, genially, h5p...*/
+      element.parentNode.after(createVideoReplacement(src));
     }
   }
   //Try fetching all vimeo API thumbnail srcs in parallel
   try {
     const foundSrcs = await Promise.allSettled(vimeoPromises);
     foundSrcs.forEach( (thumbnailImgSrc, index) => {
-      if (thumbnailImgSrc.value !== "") {
+
+      //COMPROVAR SI MIDES PER AQUI MILLOR....
+
+
+      console.log(thumbnailImgSrc);
+      if (thumbnailImgSrc.value.url !== "") {
         insertThumbnailForVideo(possibleVimeos[index].video,
-          thumbnailImgSrc.value, possibleVimeos[index].src, imgAndLink);
+          thumbnailImgSrc.value.url, possibleVimeos[index].src, imgAndLink);
       }
     });
     /*No need to return anything, insertThumbnailForVideo modifies document DOM*/
@@ -89,12 +97,15 @@ export async function createVideosThumbnail(htmlElement, imgAndLink) {
 
 /*Inserts the thumbnail image in the dom before the video element,
 then removes the original video element.*/
-const insertThumbnailForVideo = (video, thumbnailImgSrc, videoSrc, imgAndLink) => {
-  const videoDim = getVideoDims(video);
+
+
+/*ADD THIS AS OPTIONS:::::::*/
+const insertThumbnailForVideo = (videoElement, thumbnailImgSrc, videoSrc, dims, imgAndLink) => {
+  const videoDim = getVideoDims(videoElement);
   //making the iframe invisible, inserting thumbnail img on top of it
   const img = createImgWSrcText(thumbnailImgSrc, videoDim, videoSrc, imgAndLink);
-  video.parentNode.insertBefore(img, video);
-  video.remove();
+  videoElement.parentNode.insertBefore(img, videoElement);
+  videoElement.remove();
 }
 
 /*Creates a div containing an image from a src with the desired dimentions,
@@ -140,3 +151,16 @@ const getVideoDims = (videoElement) => {
   return videoDim;
 }
 
+const getLinkType = (src) => {
+  if (isYoutubeVideo(src) || isVimeoVideo(src)) {
+    return "Vídeo";
+  }
+  else if (isH5P(src)) {
+    return "H5P"
+  } else if (isGenially(src)) {
+    return "Genially";
+  }  else if (src.match(/\.(wav|mp3|ogg|aiff|webm)$/)) {
+    return "Audio";
+  }
+  return "Enllaç";
+}

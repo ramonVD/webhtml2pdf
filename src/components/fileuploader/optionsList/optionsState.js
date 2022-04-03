@@ -29,6 +29,8 @@ const defaultUserOptions = {
     selectedFontType: "em",
     increaseFixedSize: 8,
     noNbsp: true,
+    popoverAfter: true,
+    popoverCenter: true,
     videoImgsState: 0,
     removeDetails: true,
     removeIndex: false,
@@ -59,6 +61,8 @@ export const resetUserOptions = (stateSetters) => {
     stateSetters.setAddTitlePage(defaultUserOptions.addTitlePage);
     stateSetters.setUserEdits(copyUserEdits(defaultUserOptions.userEdits));
     stateSetters.setNoNbsp(defaultUserOptions.noNbsp);
+    stateSetters.setPopoverAfter(defaultUserOptions.popoverAfter);
+    stateSetters.setPopoverCenter(defaultUserOptions.popoverCenter);
 }
 
 /*Load values from storage if there are any,

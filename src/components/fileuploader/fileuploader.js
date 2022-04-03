@@ -34,6 +34,8 @@ const FileUploader = () => {
   const [removeIndex, setRemoveIndex] = useState(options.removeIndex);
   const [addTitlePage, setAddTitlePage] = useState(options.addTitlePage);
   const [userEdits, setUserEdits] = useState(copyUserEdits(options.userEdits));
+  const [popoverAfter, setPopoverAfter] = useState(copyUserEdits(options.userEdits));
+  const [popoverCenter, setPopoverCenter] = useState(copyUserEdits(options.userEdits));
   const [noNbsp, setNoNbsp] = useState(options.noNbsp);
 
   const optionsValues = {
@@ -45,6 +47,8 @@ const FileUploader = () => {
     removeIndex: removeIndex,
     addTitlePage: addTitlePage,
     userEdits: userEdits,
+    popoverAfter: popoverAfter,
+    popoverCenter: popoverCenter,
     noNbsp: noNbsp
   }
 
@@ -57,7 +61,9 @@ const FileUploader = () => {
     setRemoveIndex: (value) => { setStateAndSaveInStorage(value, setRemoveIndex, "removeIndex"); },
     setAddTitlePage: (value) => { setStateAndSaveInStorage(value, setAddTitlePage, "addTitlePage"); },
     setUserEdits: (value) => { setStateAndSaveInStorage(value, setUserEdits, "userEdits"); },
-    setNoNbsp: (value) => { setStateAndSaveInStorage(value, setNoNbsp, "noNbsp"); }
+    setNoNbsp: (value) => { setStateAndSaveInStorage(value, setNoNbsp, "noNbsp"); },
+    setPopoverAfter: (value) => { setStateAndSaveInStorage(value, setPopoverAfter, "popoverAfter"); },
+    setPopoverCenter: (value) => { setStateAndSaveInStorage(value, setPopoverCenter, "popoverCenter"); },
   }
 
   const [loaderState, setLoaderState] = useState(FILE_UPLOADER_STATE.INIT);

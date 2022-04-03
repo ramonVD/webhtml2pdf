@@ -17,6 +17,8 @@ const Optionsbox = ({optionsProps}) => {
     const {removeIndex, setRemoveIndex} = optionsProps;
     const {addTitlePage, setAddTitlePage} = optionsProps;
     const {userEdits, setUserEdits} = optionsProps;
+    const {popoverAfter, setPopoverAfter} = optionsProps;
+    const {popoverCenter, setPopoverCenter} = optionsProps;
     const {noNbsp, setNoNbsp} = optionsProps;
 
     const [open, setOpen] = useState(false);
@@ -61,7 +63,7 @@ const Optionsbox = ({optionsProps}) => {
                             </button>
                         </div>
 
-                        <div className="flex flex-col">
+                        <div className="flex flex-col mb-4">
                             <div className="flex mb-2 px-2">
                                 <Checkbox text={"Elimina espais en blanc extra"} 
                                     checked={noNbsp} setChecked={setNoNbsp} />
@@ -78,6 +80,16 @@ const Optionsbox = ({optionsProps}) => {
                                 <Checkbox text={"Afegeix pàgina títol (llibre IOC)"} 
                                     checked={addTitlePage && removeDetails} setChecked={setAddTitlePage} 
                                     options={{disabled: !removeDetails}} />
+                            </div>
+                            <div className="flex mb-2 px-2">
+                                <Checkbox text={"Popovers centrats"} 
+                                    checked={popoverCenter} setChecked={setPopoverCenter}
+                                    />
+                            </div>
+                            <div className="flex mb-2 px-2">
+                                <Checkbox text={"Popovers mostrats al final"} 
+                                    checked={popoverAfter} setChecked={setPopoverAfter}
+                                    />
                             </div>
                         </div>
                     </div>

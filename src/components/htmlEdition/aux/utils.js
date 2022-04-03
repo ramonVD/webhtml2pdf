@@ -2,12 +2,19 @@
 function isIframe(element) {
     return element.tagName.toLowerCase() === "iframe";
 }
-  
+
 function isVideo(element) {
     return element.tagName.toLowerCase() === "video";
 }
 
-  
+function isAudio(element) {
+  return element.tagName.toLowerCase() === "audio";
+}
+
+export function isUl(element) {
+  return element.tagName.toLowerCase() === "ul";
+}
+    
 //To avoid function name collision?
 export const isAnArray = (element) => element.constructor === Array
 
@@ -17,19 +24,21 @@ export function elementExists(element) {
 
 /*Return all src strings for an array of videos, or a single src
 string if its a single element.*/
-export function getVideoSrc(videoElements) {
-    if (!isAnArray(videoElements)) {
-      videoElements = [videoElements];
+export function getInteractiveElementSrc(elementsSrc) {
+    if (!isAnArray(elementsSrc)) {
+      elementsSrc = [elementsSrc];
     }
-    const videoSrcs = videoElements.map( function(el) {
+    const srcs = elementsSrc.map( function(el) {
       if (isIframe(el)) {
         return el.src;
+      }else if (isAudio(el)) {
+        return getAudioSrc(el);
       } else if (isVideo(el)) {
           return getLazyVideoSrc(el);
       }
       return "";
     });
-    return videoSrcs;
+    return srcs;
   }
   
   //Gets the src of the video if the element is a video-js construct
@@ -106,4 +115,13 @@ export function getWidthValue(element) {
     }
   }
   return result.toString();
+}
+
+function getAudioSrc(element) {
+  const source = element.querySelector("source");
+  //Probably add more checks, need more examples of how sound is displayed
+  if (source) {
+    return source.src;
+  }
+  return "";
 }
