@@ -8,8 +8,8 @@ for most just show its link.
 
 So far, only need to fetch API info when encountering Vimeo videos.*/
 
-/*Function to replace videos and iframes with videos to a text with a link
-to the video*/
+/*Function to replace interactive elements (videos, iframes...) with a link
+to the element*/
 export function replaceElementsWithLink(htmlElement) {
     const interactiveElements = findinteractiveElements(htmlElement);
     const arrayIntElements= Array.from(interactiveElements);
@@ -17,20 +17,20 @@ export function replaceElementsWithLink(htmlElement) {
     let newElement;
     for (let i = 0; i < arrayIntElements.length; i++) {
       newElement = createVideoReplacement(elSrcs[i]);
-      elSrcs[i].parentNode.replaceChild(newElement, elSrcs[i])
+      interactiveElements[i].parentNode.replaceChild(newElement, interactiveElements[i])
     }
   }
 
-  /*Function to find all videos, audios and iframes in the document */
+  /*This will get videos, audios (for some reason they also use
+    the second class, and iframes in a IOC document */
   function findinteractiveElements(htmlElement) {
     return htmlElement.querySelectorAll("iframe, .video-js");
   }
 
-  /*Creates a div with a text and a link to the src of a video*/ 
+  /*Creates a div with a text and a link to the src of an element*/ 
   const createVideoReplacement = (src, leadingText) => {
     const newDiv = document.createElement('div');
     newDiv.classList.add("py-5");
-    // style div
     const p = document.createElement("p");
     const insertText = leadingText ? leadingText : getLinkType(src);
     p.innerHTML = `<strong>${insertText}:&nbsp;&nbsp;&nbsp;</strong>`;
@@ -45,9 +45,8 @@ export function replaceElementsWithLink(htmlElement) {
   }
 
 
-/*Function to swap all interactive elements in the page 
-for their thumbnails + the video link under it. If possible,
-else just add the link under the element*/
+/*Function to replace all interactive elements in the page 
+for their thumbnails and optionally the element's link under it.*/
 export async function createInteractiveElementsThumbnail(htmlElement, options) {
   const intElements = findinteractiveElements(htmlElement);
   const intElArray = Array.from(intElements);
@@ -69,7 +68,6 @@ export async function createInteractiveElementsThumbnail(htmlElement, options) {
       }
     }
     else if (isVimeoVideo(src)) {
-      /*Call Vimeo's API to get the thumbnail imgs*/
       possibleVimeos.push({video: element, src: src});
       vimeoPromises.push(Promise.resolve(getVimeoThumbnailSrc(src)));
     } else if (isH5P(src)){
@@ -116,7 +114,7 @@ const insertThumbnailForVideo = (videoElement, imgsrc, videoSrc, options) => {
 
   /*Fix for a way to insert youtube/vimeo videos with fullscreen that messes
   up the positioning of the thumbnail image if present.
-  (Basically it sets padding to the wrapping div to 56.25% ~ )
+  (Basically it sets padding-top of the wrapping div to 56.25%~ )
   Optional because someone may have done something weird and may
   not need this 'fixed'. Maybe make more extensive changes*/
   if (cleanVideoDivs) {
