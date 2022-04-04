@@ -57,7 +57,7 @@ campus standard pages (not books or chapters).
 Also stops limiting page width to 720px and sets the background color
 to white, like what you'd see in the real page in the campus.
 Maybe add to it more in the future, it works so far but needs more
-testing on real world stuff.*/
+testing on real world stuff. */
 function cleanIOCPage(htmlElement) {
     const classesToRemove = `.navbar-nav, .popover-region, .popover-region-container,
       .moodle-has-zindex, #page-header, .block_book_toc, .urlselect, #page-footer,
@@ -91,7 +91,7 @@ NOTE: I've tried making them pdf anchors multiple times,
 couldnt make it work.
 Also, the commented part sets the link to the current course page,
 but since they change every three months this is probably not wanted...*/
-function fixIndexLinks(htmlElement) {
+export function fixIndexLinks(htmlElement) {
   const index = ioc.getIndexTable(htmlElement);
   const indexListElements = Array.from(index.querySelectorAll("ul > li"));
   const bookLinks = index !== undefined ? Array.from(index.querySelectorAll("a")).filter( el => el.href !== "" ) : [];

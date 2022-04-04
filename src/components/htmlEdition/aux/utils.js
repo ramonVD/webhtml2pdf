@@ -125,3 +125,26 @@ function getAudioSrc(element) {
   }
   return "";
 }
+
+/* Copies styles from an element to another. Inspired by
+https://stackoverflow.com/questions/9430659/how-to-get-all-the-applied-styles-of-an-element-by-just-giving-its-id
+Still unsure if it changes compost named styles (background-color. f ex), since
+normally when modifying them programatically you use their compound name
+(in the latter case, backgroundColor. Worried I'm just adding properties
+to the prototype in that case, for width/height it should work. Maybe
+use the CSSwhatever object method found in that link. Unused in the end.*/
+
+export const copyStyles = (el, targetEl) => {
+  if (!el || !targetEl) { return; }
+  const elStyles = el.getAttribute("style").split(";").map(
+    (compoundStyle) => {
+      const styleNameValue = compoundStyle.split(":");
+        return {[styleNameValue[0]]:styleNameValue[1]}
+    }
+  ).filter( dictValue => Object.keys(dictValue)[0] !== "");
+
+  elStyles.forEach( (elStyle) => {
+    const styleKV = Object.entries(elStyle)[0];
+    targetEl.style[styleKV[0]] = styleKV[1];
+  });
+}

@@ -4,7 +4,7 @@ import { isH5P, isGenially } from "../aux/H5PGenially";
 import { getInteractiveElementSrc } from '../aux/utils';
 /* Functions to edit interactive elements html.
 Depending on the element type it'll do extra stuff (for videos, can add thumbnails...),
-for most just show its link under it.
+for most just show its link.
 
 So far, only need to fetch API info when encountering Vimeo videos.*/
 
@@ -48,18 +48,24 @@ export function replaceElementsWithLink(htmlElement) {
 /*Function to swap all interactive elements in the page 
 for their thumbnails + the video link under it. If possible,
 else just add the link under the element*/
-export async function createInteractiveElementsThumbnail(htmlElement, imgAndLink) {
+export async function createInteractiveElementsThumbnail(htmlElement, options) {
   const intElements = findinteractiveElements(htmlElement);
   const intElArray = Array.from(intElements);
   const possibleVimeos = [];
   const vimeoPromises = [];
+
+  const {videoImgsState, cleanVideoDivs} = options;
+  const imgAndLink = videoImgsState > 0;
+  const insertOptions = {imgAndLink: imgAndLink, 
+    cleanVideoDivs: cleanVideoDivs}
+
   for (let element of intElArray) {
     const src = getInteractiveElementSrc(element)[0];
     if (src === undefined || src === "") { return; }
     if (isYoutubeVideo(src)) {
       const thumbnailImgSrc = getYoutubeThumbnailSrc(src);
       if (thumbnailImgSrc !== "") {
-        insertThumbnailForVideo(element, thumbnailImgSrc, src, imgAndLink);
+        insertThumbnailForVideo(element, thumbnailImgSrc, src, insertOptions);
       }
     }
     else if (isVimeoVideo(src)) {
@@ -79,14 +85,13 @@ export async function createInteractiveElementsThumbnail(htmlElement, imgAndLink
   try {
     const foundSrcs = await Promise.allSettled(vimeoPromises);
     foundSrcs.forEach( (thumbnailImgSrc, index) => {
-
-      //COMPROVAR SI MIDES PER AQUI MILLOR....
-
-
-      console.log(thumbnailImgSrc);
-      if (thumbnailImgSrc.value.url !== "") {
+      const imgJSONData = thumbnailImgSrc.value;
+      if (imgJSONData.url !== "") {
+        const dims = imgJSONData.width ? [imgJSONData.width, imgJSONData.height] : undefined;
+        if (dims) { insertOptions.dims = dims;}
         insertThumbnailForVideo(possibleVimeos[index].video,
-          thumbnailImgSrc.value.url, possibleVimeos[index].src, imgAndLink);
+          thumbnailImgSrc.value.url, possibleVimeos[index].src, 
+          insertOptions);
       }
     });
     /*No need to return anything, insertThumbnailForVideo modifies document DOM*/
@@ -97,14 +102,28 @@ export async function createInteractiveElementsThumbnail(htmlElement, imgAndLink
 
 /*Inserts the thumbnail image in the dom before the video element,
 then removes the original video element.*/
+const insertThumbnailForVideo = (videoElement, imgsrc, videoSrc, options) => {
+  const { dims, imgAndLink, cleanVideoDivs} = options;
+  let videoDims = getVideoDims(videoElement);
+  if (videoDims[0] === "100%" && videoDims[1] === "auto") {
+    if (dims) {
+      videoDims = dims.slice();
+    }
+  }
+  const img = createImgWSrcText(imgsrc, videoDims, videoSrc, imgAndLink);
 
+  const videoParent = videoElement.parentNode;
 
-/*ADD THIS AS OPTIONS:::::::*/
-const insertThumbnailForVideo = (videoElement, thumbnailImgSrc, videoSrc, dims, imgAndLink) => {
-  const videoDim = getVideoDims(videoElement);
-  //making the iframe invisible, inserting thumbnail img on top of it
-  const img = createImgWSrcText(thumbnailImgSrc, videoDim, videoSrc, imgAndLink);
-  videoElement.parentNode.insertBefore(img, videoElement);
+  /*Fix for a way to insert youtube/vimeo videos with fullscreen that messes
+  up the positioning of the thumbnail image if present.
+  (Basically it sets padding to the wrapping div to 56.25% ~ )
+  Optional because someone may have done something weird and may
+  not need this 'fixed'. Maybe make more extensive changes*/
+  if (cleanVideoDivs) {
+    videoParent.style.paddingTop = "0";
+  }
+
+  videoParent.insertBefore(img, videoElement);
   videoElement.remove();
 }
 
@@ -144,8 +163,9 @@ const createImg = (src, dimensions, alt) => {
 
 const getVideoDims = (videoElement) => {
   let videoDim = [videoElement.width, videoElement.height];
+
   //If dimensions of video are non existant or 0, set thumbnail size to 100%, auto
-  if (videoDim[0] === undefined || videoDim[1] === 0 || videoDim[1] === undefined || videoDim[1] === 0) {
+  if (videoDim[0] === undefined || [0,""].includes(videoDim[1]) || videoDim[1] === undefined || [0,""].includes(videoDim[1])) {
     videoDim = ["100%", "auto"];
   }
   return videoDim;

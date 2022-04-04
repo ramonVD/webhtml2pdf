@@ -41,7 +41,7 @@ export async function editHTML(htmlElement, options) {
     if (options.videoImgsState === 2) {
       replaceElementsWithLink(htmlElement);
     } else {
-      await createInteractiveElementsThumbnail(htmlElement, options.videoImgsState > 0);
+      await createInteractiveElementsThumbnail(htmlElement, options);
     }
      
     if (options.noNbsp) {
@@ -50,7 +50,6 @@ export async function editHTML(htmlElement, options) {
 
     cleanIOCStructures(htmlElement, options);
 
-    //Possible non blocking error if user sets a bad selector (doesnt exist or is a weird string)
     const selectorErrors = applyUserChangesToSelectors(htmlElement, options.userEdits);
 
     let errorsData = "";

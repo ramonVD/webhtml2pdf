@@ -17,9 +17,10 @@ const Optionsbox = ({optionsProps}) => {
     const {removeIndex, setRemoveIndex} = optionsProps;
     const {addTitlePage, setAddTitlePage} = optionsProps;
     const {userEdits, setUserEdits} = optionsProps;
+    const {noNbsp, setNoNbsp} = optionsProps;
     const {popoverAfter, setPopoverAfter} = optionsProps;
     const {popoverCenter, setPopoverCenter} = optionsProps;
-    const {noNbsp, setNoNbsp} = optionsProps;
+    const {cleanVideoDivs, setCleanVideoDivs} = optionsProps;
 
     const [open, setOpen] = useState(false);
     const handleToggleAccordion = () => setOpen(!open);
@@ -89,6 +90,13 @@ const Optionsbox = ({optionsProps}) => {
                             <div className="flex mb-2 px-2">
                                 <Checkbox text={"Popovers mostrats al final"} 
                                     checked={popoverAfter} setChecked={setPopoverAfter}
+                                    />
+                            </div>
+                            <div className="flex mb-2 px-2">
+                                <Checkbox text={"Arregla contenidors imatge vídeos"} 
+                                    checked={cleanVideoDivs && videoImgsState !== 2}
+                                    options={{disabled: videoImgsState === 2}} 
+                                    setChecked={setCleanVideoDivs}
                                     />
                             </div>
                         </div>
