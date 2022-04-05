@@ -3,6 +3,8 @@
 
 #### Tailored to specific pages from IOC's (Institut Obert de Catalunya) moodle. 
 
+#### Text is in catalan, code comments are in english (mostly)
+
 ### Usage
 Just drop the file you want to convert to pdf into the box under options, or click on it to search your file directory manually. A prompt to print your page to pdf will be displayed when the file has been uploaded and edited.
 
