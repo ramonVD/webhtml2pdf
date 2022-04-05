@@ -22,7 +22,7 @@ export function cleanIOCStructures(htmlElement, options={}) {
     if (options.addTitlePage && options.removeDetails) {
       createMainTitlePage(htmlElement, text);
     }
-  } else if (ioc.isIOCChapter(htmlElement, options)) {
+  } else if (ioc.isIOCChapter(htmlElement)) {
     cleanIOCChapter(htmlElement, options);
   } else if (ioc.isIOCPage(htmlElement)) {
     cleanIOCPage(htmlElement);

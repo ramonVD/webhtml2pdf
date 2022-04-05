@@ -2,7 +2,6 @@ import { copyStyles } from "../components/htmlEdition/aux/utils";
 
 it ("Copies the styles of a target element into another", () => {
     const input = document.createElement("html");
-    //emulate a IOC book structure with bogus link elements
     input.innerHTML = (
     `<html>
         <head><title>test</title>

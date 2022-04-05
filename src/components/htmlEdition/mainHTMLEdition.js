@@ -7,6 +7,7 @@ import cleanIOCStructures from "./modules/editIOCStructures";
 import { editBody, editHeaders} from "./modules/editCommonElements";
 import applyUserChangesToSelectors from "./modules/applyUserChanges";
 import { nonEditableOptions } from "../fileuploader/optionsList/optionsState";
+import fixDropdowns from "./modules/editBootstrapDropdowns";
 import { FindByStyleAttr } from "./aux/utils";
 /*
 Apply modifications to the DOM of an html document before the choice to
@@ -32,6 +33,8 @@ export async function editHTML(htmlElement, options) {
     setupTableElementsForPrint(htmlElement);
 
     showPopoverContents(htmlElement, options);
+
+    fixDropdowns(htmlElement);
 
     //Increase font size of elements with a defined font-size in px too.
     if (options.increaseFixedSize === "" || options.increaseFixedSize < 0) { options.increaseFixedSize = 0;}
