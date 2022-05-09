@@ -1,4 +1,4 @@
-import { getWidthValue, isAnArray } from "./utils";
+import { isAnArray } from "./utils";
 import fetch from 'cross-fetch';
 
 /*Probably change this regex, need to check more possible structures. 

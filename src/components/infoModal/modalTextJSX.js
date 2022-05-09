@@ -1,8 +1,11 @@
 /*Contains the body of the modal*/
 /*En el futur, que les imatges siguin -cat, -eng, -esp... si cal*/
-const modalJSX = 
+export const infomodalJSX = 
 <div>
     <p className="font-bold md:text-2xl text-xl text-center mb-3">Instruccions d'ús</p>
+    <div className=" border rounded p-2 bg-orange-100 border-orange-200 text-xl mt-4 mb-5"><strong>Resum:</strong> Obre el llibre moodle, selecciona imprimir-lo, 
+    descarrega la pàgina que s'obre com a fitxer HTML i carrega aquest fitxer al programa.</div>
+    <p className="text-xl font-bold mb-4">Pas per pas:</p>
     <ul style={{listStyle: "square"}} className="md:ml-5 ml-1 md:text-lg text-base">
         <li className="my-3">Primer de tot, cal descarregar el llibre per passar a PDF:</li>
         <ol style={{listStyle: "roman"}} className="md:ml-10 ml-6 my-2 md:text-lg text-base">
@@ -49,4 +52,30 @@ const modalJSX =
     </ul>
 </div>;
 
-export default modalJSX;
+export const problemsModalJSX = 
+<div>
+    <p className="text-2xl font-bold text-blue-900">Problemes més comuns:</p>
+    <ul className="mb-4">
+        <li className="text-xl my-5">
+            <p><strong>El pdf triga molt a aparèixer:</strong></p>
+            <p className="md:ml-2">El temps de càrrega depèn del campus.
+            Si no crea ràpidament l'arxiu pdf, espereu una mica i torneu-ho a provar.</p>
+            <p className="md:ml-2">Si el document té moltes imatges o altres elements pot trigar una estona a crear el pdf. Deixeu-lo en 
+                segon pla mentre carrega.</p>
+        </li>
+        <li className="text-xl my-5">
+            <p><strong>Hi ha pàgines en blanc al document:</strong></p>
+            <p className="md:ml-2">Si us heu deixat un element invisible que ocupi espai a la part de baix de l'última pàgina d'un capítol, 
+                això farà que hi hagi una pàgina en blanc abans del següent capítol.</p>
+            <p className="md:ml-2 pb-5">Si us passa això, procureu eliminar aquest element invisible del llibre o canviar la mida vertical de l'última pàgina del capítol.</p>
+        </li>
+    </ul>
+    <div className="bg-sky-100 border rounded border-sky-300 px-3 pt-1 pb-3 mx-auto my-5" style={{maxWidth:"80%"}}>
+        <p className="text-xl text-center my-5">En cas d'altres problemes, enviar un correu amb la descripció de què ha passat a Ramon Vicente.</p>
+        <p className="text-xl text-center my-5"> Si ja no estic a l'IOC, el codi
+        font està disponible a <a className="
+        text-blue-500 font-bold" href="https://github.com/ramonVD/webhtml2pdf" rel="noreferrer" target="_blank">github</a> </p>
+        <p className="text-xl font-bold text-center mt-3 mb-5">Programa creat per la versió del campus d'abril del 2022.</p>
+    </div>
+
+</div>

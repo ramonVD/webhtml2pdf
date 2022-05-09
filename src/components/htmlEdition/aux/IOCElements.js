@@ -4,6 +4,9 @@ import { elementExists, removeIfExists,
 of books, chapters or pages of ioc moodle documents, and 
 get the element / remove it*/
 
+//Compatibility with old campus versions (2021-2022)
+export const isOldCampus = (htmlElement) => htmlElement.querySelector(".book") === null;
+
 
 /*Returns true if its a full ioc moodle book*/
 export function isIOCBook(htmlElement) {
@@ -34,13 +37,19 @@ export const getIndexTable = (htmlElement) => {
 the IOC campus. Removes the page with details of the book (title, name of 
 the book, date of download...)*/
 export function eliminateAllDetails(htmlElement) {
+    removeIfExists(htmlElement.querySelector(".toast-wrapper"));
     const firstDiv = htmlElement.querySelector("div");
     if (firstDiv.id !== "page-wrapper") {
         removeIfExists(firstDiv);
     }
     const titleTextElement = htmlElement.querySelector("h1");
     const titleText = elementExists(titleTextElement) ? titleTextElement.innerText : "";
-    const rootElement = htmlElement.querySelector("[role='main']");
+    let rootElement;
+    if (isOldCampus(htmlElement)) { 
+        rootElement = htmlElement.querySelector("[role='main']"); 
+    } else {
+        rootElement = htmlElement.querySelector(".book"); 
+    }
     eliminateChildrenUntilFindClass( rootElement, "book_info");
     const indexTableDiv = htmlElement.querySelector(".book_info");
     removeIfExists(indexTableDiv);

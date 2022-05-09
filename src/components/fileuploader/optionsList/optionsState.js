@@ -30,7 +30,7 @@ const defaultUserOptions = {
     increaseFixedSize: 8,
     noNbsp: true,
     addTitlePage: true,
-    videoImgsState: 0,
+    videoImgsState: 1,
     removeDetails: true,
     removeIndex: false,
     popoverAfter: true,
@@ -45,7 +45,11 @@ const defaultUserOptions = {
         htmlSelector: ".Wirisformula", fontValue: "",
         marginTopValue: "", widthValue: "5",
         bgColorValue:""
-    }],
+    },
+    {
+        htmlSelector: "body", fontValue: "",
+        marginTopValue: "", widthValue: "",
+        bgColorValue:"#FFFFFF"}],
   }
 
   /*Not very well done tbh... resets all state values to their defaults*/

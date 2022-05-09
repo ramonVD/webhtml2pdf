@@ -44,8 +44,10 @@ function createMainTitlePage(htmlElement, text) {
   newTitle.style.textAlign = "center";
   newTitle.style.verticalAlign = "middle";
   newTitle.style.marginTop = "650px";
-  newTitle.style.marginLeft = "-10px";
-  newTitle.style.fontSize = "40px";
+  if (ioc.isOldCampus(htmlElement)) {
+    newTitle.style.marginLeft = "-10px";
+  }
+  newTitle.style.fontSize = "50px";
   newTitle.style.alignSelf = "center";
   newTitle.innerText = text;
   wrapperDiv.appendChild(newTitle);
@@ -93,6 +95,11 @@ Also, the commented part sets the link to the current course page,
 but since they change every three months this is probably not wanted...*/
 export function fixIndexLinks(htmlElement) {
   const index = ioc.getIndexTable(htmlElement);
+  if (index === null) { 
+    //This is fine for now? Since its an internal tool...?
+    console.log("Error. Could not remove index."); 
+    return; 
+  }
   const indexListElements = Array.from(index.querySelectorAll("ul > li"));
   const bookLinks = index !== undefined ? Array.from(index.querySelectorAll("a")).filter( el => el.href !== "" ) : [];
   if (bookLinks.length > 0) { 
