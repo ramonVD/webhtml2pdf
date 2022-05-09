@@ -2,15 +2,19 @@
 apps with some options to pages, like quizes, interactive presentations...
 https://h5p.org/
 
+Geniallies are just a link to an embedded iframe that shows a presentation
+
 They'll be treated like videos since we only need to provide their link.
 Maybe try to get a snapshot of its first DOM (they're inside an IFrame),
 but that opens up exploits imo.
 They show up as naked iframes in the use case, differentiate by src...*/
 
 
-function isH5P(src) {
+export function isH5P(src) {
     return src.match(/^https:\/\/ioc\.xtec.cat\/campus\/mod\/hvp\/embed\.php\?id=(\d+)$/);
   }
 
-
-export default isH5P;
+//double check this
+export function isGenially(src) {
+  return src.match(/^https:\/\/view.genial.ly\//);
+}

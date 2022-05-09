@@ -2,12 +2,19 @@
 function isIframe(element) {
     return element.tagName.toLowerCase() === "iframe";
 }
-  
+
 function isVideo(element) {
     return element.tagName.toLowerCase() === "video";
 }
 
-  
+function isAudio(element) {
+  return element.tagName.toLowerCase() === "audio";
+}
+
+export function isUl(element) {
+  return element.tagName.toLowerCase() === "ul";
+}
+    
 //To avoid function name collision?
 export const isAnArray = (element) => element.constructor === Array
 
@@ -17,19 +24,21 @@ export function elementExists(element) {
 
 /*Return all src strings for an array of videos, or a single src
 string if its a single element.*/
-export function getVideoSrc(videoElements) {
-    if (!isAnArray(videoElements)) {
-      videoElements = [videoElements];
+export function getInteractiveElementSrc(elementsSrc) {
+    if (!isAnArray(elementsSrc)) {
+      elementsSrc = [elementsSrc];
     }
-    const videoSrcs = videoElements.map( function(el) {
+    const srcs = elementsSrc.map( function(el) {
       if (isIframe(el)) {
         return el.src;
+      }else if (isAudio(el)) {
+        return getAudioSrc(el);
       } else if (isVideo(el)) {
           return getLazyVideoSrc(el);
       }
       return "";
     });
-    return videoSrcs;
+    return srcs;
   }
   
   //Gets the src of the video if the element is a video-js construct
@@ -106,4 +115,36 @@ export function getWidthValue(element) {
     }
   }
   return result.toString();
+}
+
+function getAudioSrc(element) {
+  const source = element.querySelector("source");
+  //Probably add more checks, need more examples of how sound is displayed
+  if (source) {
+    return source.src;
+  }
+  return "";
+}
+
+/* Copies styles from an element to another. Inspired by
+https://stackoverflow.com/questions/9430659/how-to-get-all-the-applied-styles-of-an-element-by-just-giving-its-id
+Still unsure if it changes compost named styles (background-color. f ex), since
+normally when modifying them programatically you use their compound name
+(in the latter case, backgroundColor. Worried I'm just adding properties
+to the prototype in that case, for width/height it should work. Maybe
+use the CSSwhatever object method found in that link. Unused in the end.*/
+
+export const copyStyles = (el, targetEl) => {
+  if (!el || !targetEl) { return; }
+  const elStyles = el.getAttribute("style").split(";").map(
+    (compoundStyle) => {
+      const styleNameValue = compoundStyle.split(":");
+        return {[styleNameValue[0]]:styleNameValue[1]}
+    }
+  ).filter( dictValue => Object.keys(dictValue)[0] !== "");
+
+  elStyles.forEach( (elStyle) => {
+    const styleKV = Object.entries(elStyle)[0];
+    targetEl.style[styleKV[0]] = styleKV[1];
+  });
 }

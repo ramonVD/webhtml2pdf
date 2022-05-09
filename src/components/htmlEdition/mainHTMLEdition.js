@@ -1,10 +1,13 @@
-import { replaceVideosWithLink, createVideosThumbnail } from "./modules/editVideos";
-import {setupTableElementsForPrint, 
-  openAllCollapsablesAndTabs} from "./modules/editBootstrapElements";
+import { replaceElementsWithLink, 
+  createInteractiveElementsThumbnail } from "./modules/editInteractiveElements";
+import setupTableElementsForPrint from "./modules/editBootstrapTables";
+import openAllCollapsablesAndTabs from "./modules/editBootstrapNavs";
+import showPopoverContents from "./modules/editBootstrapPopovers";
 import cleanIOCStructures from "./modules/editIOCStructures";
 import { editBody, editHeaders} from "./modules/editCommonElements";
 import applyUserChangesToSelectors from "./modules/applyUserChanges";
 import { nonEditableOptions } from "../fileuploader/optionsList/optionsState";
+import fixDropdowns from "./modules/editBootstrapDropdowns";
 import { FindByStyleAttr } from "./aux/utils";
 /*
 Apply modifications to the DOM of an html document before the choice to
@@ -13,7 +16,7 @@ print it as a pdf document is displayed.
 
 export async function editHTML(htmlElement, options) {
 
-    //Increase body and headers base or total font
+  //Increase body and headers base or total font
     if (options.bodyFontSize === "" || options.bodyFontSize < 0) { options.bodyFontSize = 1;}
     const MIDA_FONT_BASE = options.bodyFontSize + options.selectedFontType;
     //Very empirical, and very cool
@@ -29,15 +32,19 @@ export async function editHTML(htmlElement, options) {
 
     setupTableElementsForPrint(htmlElement);
 
+    showPopoverContents(htmlElement, options);
+
+    fixDropdowns(htmlElement);
+
     //Increase font size of elements with a defined font-size in px too.
     if (options.increaseFixedSize === "" || options.increaseFixedSize < 0) { options.increaseFixedSize = 0;}
     const AUGMENTAR_MIDA_FONT_PX = parseInt(options.increaseFixedSize);
     increaseElementsFixedFontSize(FindByStyleAttr(htmlElement, "fontSize"), AUGMENTAR_MIDA_FONT_PX);
 
     if (options.videoImgsState === 2) {
-      replaceVideosWithLink(htmlElement);
+      replaceElementsWithLink(htmlElement);
     } else {
-      await createVideosThumbnail(htmlElement, options.videoImgsState > 0);
+      await createInteractiveElementsThumbnail(htmlElement, options);
     }
      
     if (options.noNbsp) {
@@ -46,7 +53,6 @@ export async function editHTML(htmlElement, options) {
 
     cleanIOCStructures(htmlElement, options);
 
-    //Possible non blocking error if user sets a bad selector (doesnt exist or is a weird string)
     const selectorErrors = applyUserChangesToSelectors(htmlElement, options.userEdits);
 
     let errorsData = "";
@@ -59,6 +65,11 @@ export async function editHTML(htmlElement, options) {
 
     return {html: htmlElement, errorsData: errorsData};
   }
+
+
+
+
+
 
 
   function increaseElementsFixedFontSize(elements, amount) {

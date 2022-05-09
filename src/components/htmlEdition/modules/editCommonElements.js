@@ -5,7 +5,6 @@ Maybe make the second one optional too but it just loses page space for no reaso
 export function editBody(htmlElement, newBodyFontSize) {
     const body = htmlElement.getElementsByTagName("body")[0];
     body.style.fontSize = newBodyFontSize;
-    body.style.setProperty("margin-left", "15px" , "important");
 }
 
 /*So far, set a new base font size for the headers so they scale like

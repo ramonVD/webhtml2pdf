@@ -29,10 +29,13 @@ const defaultUserOptions = {
     selectedFontType: "em",
     increaseFixedSize: 8,
     noNbsp: true,
-    videoImgsState: 0,
+    addTitlePage: true,
+    videoImgsState: 1,
     removeDetails: true,
     removeIndex: false,
-    addTitlePage: true,
+    popoverAfter: true,
+    popoverCenter: false,
+    cleanVideoDivs: true,
     userEdits:  [{
         htmlSelector: ".exemple", fontValue: "20",
         marginTopValue: "", widthValue: "",
@@ -42,7 +45,11 @@ const defaultUserOptions = {
         htmlSelector: ".Wirisformula", fontValue: "",
         marginTopValue: "", widthValue: "5",
         bgColorValue:""
-    }],
+    },
+    {
+        htmlSelector: "body", fontValue: "",
+        marginTopValue: "", widthValue: "",
+        bgColorValue:"#FFFFFF"}],
   }
 
   /*Not very well done tbh... resets all state values to their defaults*/
@@ -59,6 +66,9 @@ export const resetUserOptions = (stateSetters) => {
     stateSetters.setAddTitlePage(defaultUserOptions.addTitlePage);
     stateSetters.setUserEdits(copyUserEdits(defaultUserOptions.userEdits));
     stateSetters.setNoNbsp(defaultUserOptions.noNbsp);
+    stateSetters.setPopoverAfter(defaultUserOptions.popoverAfter);
+    stateSetters.setPopoverCenter(defaultUserOptions.popoverCenter);
+    stateSetters.setCleanVideoDivs(defaultUserOptions.cleanVideoDivs);
 }
 
 /*Load values from storage if there are any,

@@ -3,7 +3,7 @@ import styles from "./infoModal.module.css"
 
 /*Clickable button that displays a simple modal with information about how to use
 the app*/
-const InfoModal = ({buttonText, children}) => {
+const InfoModal = ({buttonText, title="", extraClasses="", children}) => {
 
     const [open, setOpen] = useState(false);
     const modalRef = useRef(null);
@@ -27,8 +27,10 @@ const InfoModal = ({buttonText, children}) => {
     const hideModalClasses = open ? "" : " hidden ";
     //Passar els styles a classes de tailwinds
     return (
-        <div>
-            <button className="bg-sky-100 hover:bg-sky-200 sm:text-3xl text-xl font-bold sm:px-4 px-3 py-1 sm:border-2 border border-sky-400 rounded"
+        <div title={title}>
+            <button className={`bg-sky-50 hover:bg-sky-200 sm:text-3xl text-xl 
+            font-bold sm:px-4 px-3 mr-2 mt-1 py-1 sm:border-2 border border-sky-400 
+            rounded ${extraClasses}`}
             onClick={() => {handleToggleModal();}} >
             {buttonText}
             </button>
