@@ -1,4 +1,4 @@
-/*Small animation for the modal*/
+/*Small animation for the modal appearing*/
 @keyframes appear {
  0% {
     opacity: 0%;

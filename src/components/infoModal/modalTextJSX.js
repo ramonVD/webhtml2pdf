@@ -1,5 +1,5 @@
-/*Contains the body of the modal*/
-/*En el futur, que les imatges siguin -cat, -eng, -esp... si cal*/
+/*Contains the possible bodies of the modal*/
+/*En el futur, posar-ho en diferents idiomes...potser*/
 export const infomodalJSX = 
 <div>
     <p className="font-bold md:text-2xl text-xl text-center mb-3">Instruccions d'ús</p>
@@ -71,11 +71,11 @@ export const problemsModalJSX =
         </li>
     </ul>
     <div className="bg-sky-100 border rounded border-sky-300 px-3 pt-1 pb-3 mx-auto my-5" style={{maxWidth:"80%"}}>
-        <p className="text-xl text-center my-5">En cas d'altres problemes, enviar un correu amb la descripció de què ha passat a Ramon Vicente.</p>
+        <p className="text-xl text-center my-5">En cas d'altres problemes, enviar un correu amb la descripció de què ha passat a Ramon Vicente (Planta 5).</p>
         <p className="text-xl text-center my-5"> Si ja no estic a l'IOC, el codi
         font està disponible a <a className="
-        text-blue-500 font-bold" href="https://github.com/ramonVD/webhtml2pdf" rel="noreferrer" target="_blank">github</a> </p>
-        <p className="text-xl font-bold text-center mt-3 mb-5">Programa creat per la versió del campus d'abril del 2022.</p>
+        text-blue-600 hover:text-blue-800 visited:text-purple-600 font-bold" href="https://github.com/ramonVD/webhtml2pdf" rel="noreferrer" target="_blank">github</a> </p>
+        <p className="text-xl font-bold text-center mt-3 mb-5">Última comprovació de compatibilitat: maig 2022</p>
     </div>
 
 </div>
