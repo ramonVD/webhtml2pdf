@@ -1,6 +1,6 @@
 import { elementExists, isUl } from "../aux/utils";
 
-// BOOTSTRAP - FIX NAVS (PESTANYES) & COLLAPSE FOR PRINT
+// BOOTSTRAP - FIX NAVS (PESTANYES) & COLLAPSABLES BEFORE PRINT
 
 /*Per defecte aplica padding i margin i assigna un color a la vora inferior 
     de cada tab-pane (excepte l'últim) dins un element amb "pestanyes". Canviar aquí.*/

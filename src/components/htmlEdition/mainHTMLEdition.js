@@ -36,7 +36,6 @@ export async function editHTML(htmlElement, options) {
 
     fixDropdowns(htmlElement);
 
-    //Increase font size of elements with a defined font-size in px too.
     if (options.increaseFixedSize === "" || options.increaseFixedSize < 0) { options.increaseFixedSize = 0;}
     const AUGMENTAR_MIDA_FONT_PX = parseInt(options.increaseFixedSize);
     increaseElementsFixedFontSize(FindByStyleAttr(htmlElement, "fontSize"), AUGMENTAR_MIDA_FONT_PX);
@@ -71,7 +70,7 @@ export async function editHTML(htmlElement, options) {
 
 
 
-
+  //Increase font size of elements with a defined font-size in px.
   function increaseElementsFixedFontSize(elements, amount) {
     elements.forEach(function(element) {
       const OGFontSize = element.style.fontSize;
@@ -83,6 +82,7 @@ export async function editHTML(htmlElement, options) {
     });
   }
 
+  //Remove &nbsp; elements from all paragraphs (this was a request)
   function removeNBSP(htmlElement) {
     const ps = htmlElement.querySelectorAll("p");
     ps.forEach( function(el) {

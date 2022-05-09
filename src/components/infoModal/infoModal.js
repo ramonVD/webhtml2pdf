@@ -3,7 +3,7 @@ import styles from "./infoModal.module.css"
 
 /*Clickable button that displays a simple modal with information about how to use
 the app*/
-const InfoModal = ({buttonText, title="", extraClasses="", children}) => {
+const InfoModal = ({buttonText, title="", buttonDecoration="", extraClasses="", children}) => {
 
     const [open, setOpen] = useState(false);
     const modalRef = useRef(null);
@@ -25,12 +25,13 @@ const InfoModal = ({buttonText, title="", extraClasses="", children}) => {
     })
 
     const hideModalClasses = open ? "" : " hidden ";
+    const buttonCss = (buttonDecoration === "") ? "bg-sky-50 hover:bg-sky-200 border-sky-400" : buttonDecoration;
     //Passar els styles a classes de tailwinds
     return (
-        <div title={title}>
-            <button className={`bg-sky-50 hover:bg-sky-200 sm:text-3xl text-xl 
-            font-bold sm:px-4 px-3 mr-2 mt-1 py-1 sm:border-2 border border-sky-400 
-            rounded ${extraClasses}`}
+        <div>
+            <button className={`${buttonCss} sm:text-3xl text-xl 
+            font-bold sm:px-4 px-3 mr-2 mt-1 py-1 sm:border-2 border 
+            rounded ${extraClasses}`} title={title}
             onClick={() => {handleToggleModal();}} >
             {buttonText}
             </button>
@@ -41,7 +42,7 @@ const InfoModal = ({buttonText, title="", extraClasses="", children}) => {
                 // eslint-disable-next-line no-dupe-keys
                 backgroundColor: "rgba(0,0,0,0.4)"
               }}>
-                <div className="text-left p-5 md:w-3/4 w-11/12"
+                <div className="text-left p-5 md:w-3/4 w-10/12"
                 style= {{  backgroundColor: "#fefefe", margin: "7% auto", border: "1px solid #888"}}>
                     <span className="close cursor-pointer relative float-right" style={{position:"relative",
                     float:"right",color: "#aaa",right: "right", top:"-25px", fontSize: "28px", fontWeight: "bold"}}

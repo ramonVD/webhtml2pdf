@@ -3,11 +3,6 @@ import FileUploader from './components/fileuploader/fileuploader';
 import InfoModal from './components/infoModal/infoModal';
 import {infomodalJSX, problemsModalJSX} from './components/infoModal/modalTextJSX';
 
-/*TO-DO: 
-- Determinar si els qüestionaris poden netejar-se també de manera segura,
-per cursos on la majoria d'informació es troba als qüestionaris.
-*/
-
 function App() {
 
   return (
@@ -20,7 +15,8 @@ function App() {
               <InfoModal buttonText="📄" title="Instruccions">
                 {infomodalJSX}
               </InfoModal>
-              <InfoModal buttonText="🤒" title="Problemes?" extraClasses='bg-red-50 border-red-500 hover:bg-red-300'>
+              <InfoModal buttonText="🤒" title="Problemes?" 
+              buttonDecoration='bg-red-50 border-red-500 hover:bg-red-300'>
                 {problemsModalJSX}
               </InfoModal>
               </div>
