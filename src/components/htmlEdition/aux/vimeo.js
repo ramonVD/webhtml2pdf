@@ -10,7 +10,7 @@ https://player.vimeo.com/video/611546210?h=b516b8a392&badge=0&autopause=0&player
 
 https://player.vimeo.com/video/89903374*/
 export function isVimeoVideo(videoSrc) {
-  return videoSrc.match(/^https:\/\/player\.vimeo\.com\/video\/(\d+\?h=[a-z0-9]+|\d{8})/);
+  return videoSrc.match(/^https:\/\/player\.vimeo\.com\/video\/(\d+\?h=[a-z0-9]+|\d+)/);
 }
 
 /*Queries vimeo API to obtain the thumbnail image source of a video.
